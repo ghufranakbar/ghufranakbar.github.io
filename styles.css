@@ -108,6 +108,7 @@ section:first-of-type {
     padding: 0 40px;
     width: 100%;
     box-sizing: border-box;
+    gap: 2rem;
 }
 
 .nav-logo {
@@ -115,7 +116,127 @@ section:first-of-type {
     align-items: center;
     gap: 10px;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.nav-logo h2 {
+    margin: 0;
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.code-bracket {
+    color: #00ff88;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+}
+
+.name-text {
+    color: #ffffff;
+    margin: 0 2px;
+    background: linear-gradient(135deg, #00ff88 0%, #ff6b35 50%, #00d4ff 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 3s ease-in-out infinite;
+}
+
+.cursor-blink {
+    color: #00ff88;
+    animation: blink 1.2s infinite;
+    font-weight: 400;
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.nav-logo:hover {
+    transform: translateY(-2px);
+}
+
+.nav-logo:hover .code-bracket {
+    color: #ffff00;
+    text-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+}
+
+.nav-logo:hover .name-text {
+    animation-duration: 1s;
+    filter: brightness(1.3);
+}
+
+.nav-logo:hover .cursor-blink {
+    color: #ffff00;
+    animation-duration: 0.8s;
+}
+
+.nav-logo:active {
+    transform: translateY(0px) scale(0.98);
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
+}
+
+.language-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.lang-btn {
+    background: none;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #e2e8f0;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.lang-btn:hover {
+    border-color: #60a5fa;
+    background: rgba(96, 165, 250, 0.1);
+}
+
+.lang-text {
+    transition: all 0.3s ease;
+}
+
+.lang-text.inactive {
+    opacity: 0.5;
+}
+
+.lang-separator {
+    opacity: 0.6;
 }
 
 .memoji {
@@ -127,12 +248,6 @@ section:first-of-type {
     0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
     40% { transform: translateY(-10px); }
     60% { transform: translateY(-5px); }
-}
-
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
 }
 
 .nav-link {
@@ -1253,6 +1368,46 @@ section {
     
     .nav-container {
         padding: 0 20px;
+    }
+    
+    .nav-controls {
+        gap: 1.5rem;
+    }
+    
+    .lang-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 70px;
+        gap: 0.4rem;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: rgba(15, 23, 42, 0.98);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(96, 165, 250, 0.1);
+        padding: 2rem 0;
+        margin: 0;
+        justify-content: flex-start;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-menu li {
+        margin: 1rem 0;
+    }
+    
+    .hamburger {
+        display: flex;
     }
     
     .about-main {

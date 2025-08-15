@@ -12,8 +12,74 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Ensure buttons are functional without debug styling
+// Language Toggle Functionality
+class LanguageToggle {
+    constructor() {
+        this.currentLang = 'en';
+        this.toggleBtn = document.getElementById('lang-toggle');
+        this.init();
+    }
+
+    init() {
+        if (this.toggleBtn) {
+            this.toggleBtn.addEventListener('click', () => this.toggleLanguage());
+        }
+        
+        // Set initial language from localStorage or default to English
+        const savedLang = localStorage.getItem('portfolio-language') || 'en';
+        this.setLanguage(savedLang);
+    }
+
+    toggleLanguage() {
+        const newLang = this.currentLang === 'en' ? 'de' : 'en';
+        this.setLanguage(newLang);
+    }
+
+    setLanguage(lang) {
+        this.currentLang = lang;
+        localStorage.setItem('portfolio-language', lang);
+        
+        // Update all translatable elements
+        const translatableElements = document.querySelectorAll(`[data-${lang}]`);
+        translatableElements.forEach(element => {
+            const translation = element.getAttribute(`data-${lang}`);
+            if (translation) {
+                element.textContent = translation;
+            }
+        });
+
+        // Update button appearance
+        this.updateToggleButton();
+        
+        // Update document language and title
+        document.documentElement.lang = lang;
+        const title = lang === 'en' ? 'Muhammad Ghufran Akbar - Portfolio' : 'Muhammad Ghufran Akbar - Portfolio';
+        document.title = title;
+    }
+
+    updateToggleButton() {
+        if (!this.toggleBtn) return;
+        
+        const enText = this.toggleBtn.querySelector('.lang-text:first-child');
+        const deText = this.toggleBtn.querySelector('.lang-text:last-child');
+        
+        if (this.currentLang === 'en') {
+            enText.classList.remove('inactive');
+            deText.classList.add('inactive');
+        } else {
+            enText.classList.add('inactive');
+            deText.classList.remove('inactive');
+        }
+        
+        this.toggleBtn.setAttribute('data-lang', this.currentLang);
+    }
+}
+
+// Initialize language toggle when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    new LanguageToggle();
+    
+    // Existing button functionality
     const buttons = document.querySelectorAll('.btn, .social-btn');
     
     buttons.forEach((button) => {
@@ -317,3 +383,74 @@ document.addEventListener('keydown', (e) => {
 //     easing: 'ease-in-out',
 //     once: true
 // });
+
+// Interactive Logo Functionality
+class InteractiveLogo {
+    constructor() {
+        this.logo = document.getElementById('logo-text');
+        this.nameText = this.logo.querySelector('.name-text');
+        this.originalText = 'Muhammad Ghufran Akbar';
+        this.techVariations = [
+            'console.log("Full-Stack Developer")',
+            'git commit -m "Innovation"',
+            'npm install success',
+            'SELECT * FROM opportunities',
+            '{ "role": "Software Engineer" }',
+            'Muhammad Ghufran Akbar'
+        ];
+        this.isAnimating = false;
+        this.init();
+    }
+
+    init() {
+        this.logo.addEventListener('click', () => this.triggerTypewriter());
+    }
+
+    async triggerTypewriter() {
+        if (this.isAnimating) return;
+        this.isAnimating = true;
+
+        const randomTech = this.techVariations[Math.floor(Math.random() * (this.techVariations.length - 1))];
+        
+        // Clear current text
+        await this.clearText();
+        
+        // Type tech message
+        await this.typeText(randomTech);
+        
+        // Wait a moment
+        await this.sleep(1500);
+        
+        // Clear tech message
+        await this.clearText();
+        
+        // Type original name back
+        await this.typeText(this.originalText);
+        
+        this.isAnimating = false;
+    }
+
+    async clearText() {
+        const currentText = this.nameText.textContent;
+        for (let i = currentText.length; i >= 0; i--) {
+            this.nameText.textContent = currentText.substring(0, i);
+            await this.sleep(30);
+        }
+    }
+
+    async typeText(text) {
+        for (let i = 0; i <= text.length; i++) {
+            this.nameText.textContent = text.substring(0, i);
+            await this.sleep(50);
+        }
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+// Initialize Interactive Logo
+document.addEventListener('DOMContentLoaded', () => {
+    new InteractiveLogo();
+});
