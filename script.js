@@ -1,15 +1,50 @@
-// Smooth scrolling for navigation links
+// Smooth scrolling for navigation links with enhanced easing
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            const headerOffset = 80;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
             });
         }
     });
+});
+
+// Enhanced scroll-triggered animations
+class ScrollAnimations {
+    constructor() {
+        this.observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        this.init();
+    }
+
+    init() {
+        // Create intersection observer for smooth reveal animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, this.observerOptions);
+
+        // Observe elements that should animate on scroll
+        const animateElements = document.querySelectorAll('.story-card, .tech-stack, .achievement-item');
+        animateElements.forEach(el => observer.observe(el));
+    }
+}
+
+// Initialize enhanced scroll animations
+document.addEventListener('DOMContentLoaded', function() {
+    new ScrollAnimations();
 });
 
 // Language Toggle Functionality
@@ -391,11 +426,20 @@ class InteractiveLogo {
         this.nameText = this.logo.querySelector('.name-text');
         this.originalText = 'Muhammad Ghufran Akbar';
         this.techVariations = [
-            'console.log("Full-Stack Developer")',
-            'git commit -m "Innovation"',
-            'npm install success',
-            'SELECT * FROM opportunities',
-            '{ "role": "Software Engineer" }',
+            'pipeline = build_ml_model(data)',
+            'from vertex_ai import AutoML',
+            'SELECT * FROM bigquery.ml.PREDICT',
+            'dbt run --models ml_features',
+            'airflow trigger_dag ml_pipeline',
+            '{ "role": "ML Engineer" }',
+            'terraform apply -auto-approve',
+            'agentic_ai.optimize_process()',
+            'data_pipeline.transform().load()',
+            'console.log("Data Engineer")',
+            'kubectl apply -f ai-model.yaml',
+            'gcloud compute instances create',
+            'docker-compose up -d',
+            'git push origin feature/ml-ops',
             'Muhammad Ghufran Akbar'
         ];
         this.isAnimating = false;
