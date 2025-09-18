@@ -62,61 +62,226 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="ai-background">
+            <div class="data-streams">
+                <div class="stream stream-1"></div>
+                <div class="stream stream-2"></div>
+                <div class="stream stream-3"></div>
+            </div>
+            <div class="neural-network">
+                <div class="node node-1"></div>
+                <div class="node node-2"></div>
+                <div class="node node-3"></div>
+                <div class="node node-4"></div>
+                <div class="connection con-1"></div>
+                <div class="connection con-2"></div>
+                <div class="connection con-3"></div>
+            </div>
+        </div>
+
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-image">
-                    <img src="image.jpg" alt="Muhammad Ghufran Akbar" class="profile-image">
-                </div>
-                <h1 class="hero-title">
-                    <span data-en="Hi, I'm " data-de="Hallo, ich bin "></span><span class="gradient-text">Muhammad Ghufran Akbar</span>
-                </h1>
-                <p class="hero-subtitle" data-en="Global Ecommerce Engineering - Working Student @ PUMA GROUP" data-de="Global Ecommerce Engineering - Werkstudent @ PUMA GROUP">
-                </p>
-                <p class="hero-description">
-                    <span class="highlight" data-en="M.Sc in International Information Systems" data-de="M.Sc in International Information Systems"></span> <span data-en="student with expertise in Order Management Systems, " data-de="Student mit Expertise in Order Management Systemen, "></span><span class="highlight-accent">cloud engineering, and Infrastructure as Code</span>. <span data-en="Passionate about" data-de="Leidenschaftlich interessiert an"></span> 
-                    <span class="highlight-accent" data-en="Agentic AI and process analytics" data-de="Agentic AI und Prozessanalytik"></span> <span data-en="while aspiring to build a career as an ML Engineer and Data Engineer. Currently building AI-powered tools using" data-de="und strebt eine Karriere als ML Engineer und Data Engineer an. Entwickelt derzeit KI-gestützte Tools mit"></span> <span class="highlight-accent">Vertex AI, BigQuery, dbt & Airflow</span>, <span data-en="with hands-on experience in " data-de="mit praktischer Erfahrung in "></span><span class="highlight">GCP, Terraform, and CI/CD automation</span>. <span class="highlight" data-en="Gold Medallist" data-de="Goldmedaillen-Gewinner"></span> 
-                    <span data-en="with experience across Banking, E-commerce, Sports & Lifestyle, and Telecommunications sectors." data-de="mit Erfahrung in den Bereichen Banking, E-Commerce, Sport & Lifestyle und Telekommunikation."></span>
-                </p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary" data-en="View My Work" data-de="Meine Arbeit ansehen"></a>
-                    <a href="#contact" class="btn btn-secondary" data-en="Get In Touch" data-de="Kontakt aufnehmen"></a>
-                    <a href="Muhammad_Ghufran_Akbar_Resume.pdf" target="_blank" class="btn btn-accent" data-en="Resume" data-de="Lebenslauf"></a>
-                </div>
-                <div class="social-links">
-                    <a href="https://linkedin.com/in/ghufranakbar" target="_blank" class="social-btn">
-                        <i class="fab fa-linkedin"></i>
-                        <span>LinkedIn</span>
-                    </a>
-                    <a href="https://github.com/ghufranakbar" target="_blank" class="social-btn">
-                        <i class="fab fa-github"></i>
-                        <span>GitHub</span>
-                    </a>
-                    <a href="mailto:ghufran.akbar99@gmail.com" class="social-btn">
-                        <i class="fas fa-envelope"></i>
-                        <span data-en="Email" data-de="E-Mail">Email</span>
-                    </a>
+                <div class="hero-main">
+                    <div class="hero-profile">
+                        <div class="profile-container">
+                            <div class="profile-border">
+                                <img src="image.jpg" alt="Muhammad Ghufran Akbar" class="profile-image">
+                            </div>
+                            <div class="profile-info">
+                                <p class="profile-title" onclick="toggleAIGame()">
+                                    <span class="code-bracket">&lt;</span>
+                                    <span class="name-text">ML Engineer & Data Scientist</span>
+                                    <span class="code-bracket">/&gt;</span>
+                                    <span class="cursor-blink">|</span>
+                                </p>
+                                
+                                <!-- AI Mini Game Modal -->
+                                <div id="ai-game-backdrop" class="ai-game-backdrop"></div>
+                                <div id="ai-game" class="ai-game-container">
+                                    <div class="ai-game-header">
+                                        <h3>🤖 AI Neural Network Training</h3>
+                                        <button onclick="toggleAIGame()" class="close-game">×</button>
+                                    </div>
+                                    <div class="ai-game-content">
+                                        <div class="neural-nodes" id="neural-nodes"></div>
+                                        <div class="game-stats">
+                                            <p>Accuracy: <span id="accuracy">0</span>%</p>
+                                            <p>Epoch: <span id="epoch">0</span></p>
+                                            <button onclick="trainNetwork()" class="train-btn">Train AI</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-main-content">
+                        <div class="hero-text">
+                    
+                    <h1 class="hero-title">
+                        <span data-en="Hi, I'm " data-de="Hallo, ich bin ">Hi, I'm </span>
+                        <span class="gradient-text">Muhammad Ghufran Akbar</span>
+                    </h1>
+                    
+                    <p class="hero-subtitle">
+                        <span data-en="Global Ecommerce Engineering - Working Student @ PUMA GROUP" data-de="Global Ecommerce Engineering - Werkstudent @ PUMA GROUP">Global Ecommerce Engineering - Working Student @ PUMA GROUP</span>
+                    </p>
+                    
+                    <p class="hero-description">
+                        <span class="highlight" data-en="M.Sc in International Information Systems" data-de="M.Sc in International Information Systems">M.Sc in International Information Systems</span> 
+                        <span data-en="student specializing in " data-de="Student mit Spezialisierung auf ">student specializing in </span>
+                        <span class="highlight-accent">Agentic AI, Process Analytics & Data Engineering</span>. 
+                        <span data-en="Building intelligent solutions with " data-de="Entwickle intelligente Lösungen mit ">Building intelligent solutions with </span>
+                        <span class="highlight-accent">Vertex AI, BigQuery, dbt, Airflow & CI/CD Terraform</span>, 
+                        <span data-en="while delivering " data-de="und liefere dabei ">while delivering </span>
+                        <span class="highlight">98% UAT success rates</span> 
+                        <span data-en="and " data-de="und ">and </span>
+                        <span class="highlight">40% operational efficiency gains</span> 
+                        <span data-en="across global e-commerce systems." data-de="in globalen E-Commerce-Systemen.">across global e-commerce systems.</span>
+                    </p>
+                    
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn btn-primary">
+                            
+                            <span data-en="View Projects" data-de="Projekte ansehen">View Projects</span>
+                        </a>
+                        <a href="#contact" class="btn btn-secondary">
+                            
+                            <span data-en="Let's Connect" data-de="Vernetzen">Let's Connect</span>
+                        </a>
+                        <a href="Muhammad_Ghufran_Akbar_Resume.pdf" target="_blank" class="btn btn-accent">
+                            
+                            <span data-en="Resume" data-de="Lebenslauf">Resume</span>
+                        </a>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/ghufranakbar" target="_blank" class="social-btn">
+                            <i class="fab fa-linkedin"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://github.com/ghufranakbar" target="_blank" class="social-btn">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="mailto:ghufran.akbar99@gmail.com" class="social-btn">
+                            <i class="fas fa-envelope"></i>
+                            <span data-en="Email" data-de="E-Mail">Email</span>
+                        </a>
+                    </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="hero-visual">
-                    <div class="achievement-card">
-                        <div class="achievement-number">3+</div>
-                        <h4 data-en="Years Experience" data-de="Jahre Erfahrung">Years Experience</h4>
-                        <p data-en="Professional Development" data-de="Berufliche Entwicklung">Professional Development</p>
+                <!-- AI Capability Matrix -->
+                <div class="ai-capabilities">
+                    <div class="capability-matrix">
+                        <div class="matrix-header">
+                            <span class="matrix-title">CORE_CAPABILITIES</span>
+                            <div class="matrix-indicator pulsing"></div>
+                        </div>
+                        <div class="capability-grid">
+                            <div class="capability-item">
+                                <span class="cap-label">ML_ENGINEERING</span>
+                                <div class="cap-bar">
+                                    <div class="cap-fill" style="width: 92%"></div>
+                                </div>
+                                <span class="cap-value">92%</span>
+                            </div>
+                            <div class="capability-item">
+                                <span class="cap-label">DATA_PIPELINE</span>
+                                <div class="cap-bar">
+                                    <div class="cap-fill" style="width: 88%"></div>
+                                </div>
+                                <span class="cap-value">88%</span>
+                            </div>
+                            <div class="capability-item">
+                                <span class="cap-label">CLOUD_INFRA</span>
+                                <div class="cap-bar">
+                                    <div class="cap-fill" style="width: 85%"></div>
+                                </div>
+                                <span class="cap-value">85%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Matrix Status Section -->
+                        <div class="matrix-status">
+                            <div class="status-grid">
+                                <div class="status-item">
+                                    <div class="status-dot"></div>
+                                    <span>SYSTEMS_ONLINE</span>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-dot"></div>
+                                    <span>MODELS_ACTIVE</span>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-dot"></div>
+                                    <span>PIPELINES_RUNNING</span>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-dot"></div>
+                                    <span>READY_TO_DEPLOY</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="achievement-card">
-                        <div class="achievement-number">6</div>
-                        <h4 data-en="Companies" data-de="Unternehmen">Companies</h4>
-                        <p data-en="Diverse Experience" data-de="Vielfältige Erfahrung">Diverse Experience</p>
-                    </div>
-                    <div class="achievement-card">
-                        <div class="achievement-number">AI</div>
-                        <h4 data-en="ML & Data Engineering" data-de="ML & Data Engineering">ML & Data Engineering</h4>
-                        <p data-en="Career Aspirations" data-de="Karriere-Aspirationen">Career Aspirations</p>
-                    </div>
-                    <div class="achievement-card">
-                        <div class="achievement-number">🇩🇪</div>
-                        <h4 data-en="German Market Ready" data-de="Deutsch Markt Bereit">German Market Ready</h4>
-                        <p data-en="Enterprise Solutions" data-de="Unternehmenslösungen">Enterprise Solutions</p>
+                    
+                    <div class="ai-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-controls">
+                                <span class="control-dot red"></span>
+                                <span class="control-dot yellow"></span>
+                                <span class="control-dot green"></span>
+                            </div>
+                            <span class="terminal-title">PERFORMANCE_METRICS</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="code-line">
+                                <span class="prompt">ghufran@puma:~$</span>
+                                <span class="command">show --uat-performance</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="success">UAT Success Rate: 98%</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="metric">  └─ Global OMS Rollouts | 5 Regions Unified</span>
+                            </div>
+                            <div class="code-line">
+                                <span class="prompt">ghufran@puma:~$</span>
+                                <span class="command">analytics --efficiency-gains</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="success">Operational Efficiency: +40%</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="metric">  └─ AI + Automation Pipeline Optimization</span>
+                            </div>
+                            <div class="code-line">
+                                <span class="prompt">ghufran@puma:~$</span>
+                                <span class="command">ml-deploy --count --production</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="success">ML Models in Production: 3,000+</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="metric">  └─ Agentic AI | Real-time Decision Making</span>
+                            </div>
+                            <div class="code-line">
+                                <span class="prompt">ghufran@puma:~$</span>
+                                <span class="command">status --market-readiness --de</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="success">German Market: Ready</span>
+                            </div>
+                            <div class="code-line output">
+                                <span class="metric">  └─ GCP + Terraform | Enterprise Solutions</span>
+                            </div>
+                            <div class="code-line">
+                                <span class="prompt">ghufran@puma:~$</span>
+                                <span class="typing-cursor">█</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,7 +293,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title" data-en="Who Am I?" data-de="Wer bin ich?">Who Am I?</h2>
-                <div class="section-subtitle" data-en="Aspiring ML Engineer & Data Engineer" data-de="Angehender ML Engineer & Data Engineer">Aspiring ML Engineer & Data Engineer</div>
+                <div class="section-subtitle" data-en="ML Engineer & Data Engineer" data-de="ML Engineer & Data Engineer">ML Engineer & Data Engineer</div>
             </div>
             <div class="about-content">
                 <div class="about-main">
@@ -144,7 +309,7 @@
                             </p>
                         </div>
                         
-                        <div class="story-card">
+                        <div class="story-card animate-in">
                             <div class="story-icon">
                                 <i class="fas fa-brain"></i>
                             </div>
@@ -156,7 +321,7 @@
                             </p>
                         </div>
                         
-                        <div class="story-card">
+                        <div class="story-card animate-in">
                             <div class="story-icon">
                                 <i class="fas fa-globe"></i>
                             </div>
@@ -808,52 +973,196 @@
     <section id="contact" class="contact">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title" data-en="Get In Touch" data-de="Kontakt aufnehmen">Get In Touch</h2>
-                <div class="section-subtitle" data-en="Let's Connect" data-de="Lass uns vernetzen">Let's Connect</div>
+                <h2 class="section-title" data-en="Initialize Connection" data-de="Verbindung initialisieren">Initialize Connection</h2>
+                <div class="section-subtitle" data-en="Let's Engineer Solutions Together" data-de="Lassen Sie uns gemeinsam Lösungen entwickeln">Let's Engineer Solutions Together</div>
             </div>
             <div class="contact-content">
-                <p class="contact-description" data-en="I'm always open to discussing new opportunities, innovative projects, or potential collaborations. Feel free to reach out if you'd like to connect!" data-de="Ich bin immer offen für Diskussionen über neue Möglichkeiten, innovative Projekte oder potenzielle Kooperationen. Zögern Sie nicht, sich zu melden, wenn Sie sich vernetzen möchten!">
-                    I'm always open to discussing new opportunities, innovative projects, or potential collaborations. 
-                    Feel free to reach out if you'd like to connect!
-                </p>
-                <div class="contact-methods">
-                    <div class="contact-grid">
-                        <a href="mailto:ghufran.akbar99@gmail.com" class="contact-method">
-                            <div class="method-icon">
+                <div class="ai-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <span class="control-dot red"></span>
+                            <span class="control-dot yellow"></span>
+                            <span class="control-dot green"></span>
+                        </div>
+                        <div class="terminal-title">agentic_ai_collaboration.py</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="code-line">
+                            <span class="line-number">01</span>
+                            <span class="keyword">class</span> <span class="class-name">CollaborationAgent</span>:
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">02</span>
+                            <span class="indent">    </span><span class="keyword">def</span> <span class="function">__init__(self)</span>:
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">03</span>
+                            <span class="indent">        </span><span class="variable">self.expertise</span> = [<span class="string">"ML Engineering"</span>, <span class="string">"Data Engineering"</span>]
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">04</span>
+                            <span class="indent">        </span><span class="variable">self.tech_stack</span> = [<span class="string">"GCP"</span>, <span class="string">"Vertex AI"</span>, <span class="string">"Terraform"</span>]
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">05</span>
+                            <span class="indent">        </span><span class="variable">self.available</span> = <span class="boolean">True</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">06</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">07</span>
+                            <span class="indent">    </span><span class="keyword">def</span> <span class="function">connect</span>(<span class="variable">channel</span>):
+                        </div>
+                        <div class="code-line typing-animation">
+                            <span class="line-number">08</span>
+                            <span class="indent">        </span><span class="keyword">return</span> <span class="string">"Ready to build intelligent solutions!"</span><span class="cursor">|</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="connection-grid">
+                    <div class="connection-node email-node">
+                        <div class="node-header">
+                            <div class="node-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
-                            <div>
-                                <h4>Email</h4>
-                                <p>ghufran.akbar99@gmail.com</p>
+                            <div class="node-status">
+                                <span class="status-indicator active"></span>
+                                <span class="status-text" data-en="ACTIVE" data-de="AKTIV">ACTIVE</span>
                             </div>
+                        </div>
+                        <div class="node-content">
+                            <h4 data-en="Primary Channel" data-de="Primärer Kanal">Primary Channel</h4>
+                            <p class="node-address">ghufran.akbar99@gmail.com</p>
+                            <div class="node-metrics">
+                                <span class="metric">
+                                    <i class="fas fa-clock"></i>
+                                    <span data-en="Response: <24h" data-de="Antwort: <24h">Response: &lt;24h</span>
+                                </span>
+                            </div>
+                        </div>
+                        <a href="mailto:ghufran.akbar99@gmail.com" class="node-action">
+                            <span data-en="Initiate Email Protocol" data-de="E-Mail-Protokoll starten">Initiate Email Protocol</span>
+                            <i class="fas fa-arrow-right"></i>
                         </a>
-                        <a href="https://linkedin.com/in/ghufranakbar" target="_blank" class="contact-method">
-                            <div class="method-icon">
+                    </div>
+
+                    <div class="connection-node linkedin-node">
+                        <div class="node-header">
+                            <div class="node-icon">
                                 <i class="fab fa-linkedin"></i>
                             </div>
-                            <div>
-                                <h4>LinkedIn</h4>
-                                <p>linkedin.com/in/ghufranakbar</p>
+                            <div class="node-status">
+                                <span class="status-indicator active"></span>
+                                <span class="status-text" data-en="CONNECTED" data-de="VERBUNDEN">CONNECTED</span>
                             </div>
+                        </div>
+                        <div class="node-content">
+                            <h4 data-en="Professional Network" data-de="Berufliches Netzwerk">Professional Network</h4>
+                            <p class="node-address">linkedin.com/in/ghufranakbar</p>
+                            <div class="node-metrics">
+                                <span class="metric">
+                                    <i class="fas fa-users"></i>
+                                    <span data-en="Network: 500+ Connections" data-de="Netzwerk: 500+ Verbindungen">Network: 500+ Connections</span>
+                                </span>
+                            </div>
+                        </div>
+                        <a href="https://linkedin.com/in/ghufranakbar" target="_blank" class="node-action">
+                            <span data-en="Connect via LinkedIn" data-de="Über LinkedIn verbinden">Connect via LinkedIn</span>
+                            <i class="fas fa-external-link-alt"></i>
                         </a>
-                        <a href="tel:+4915775622441" class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-phone"></i>
-                            </div>
-                            <div>
-                                <h4>Phone</h4>
-                                <p>+49 1577 5622441</p>
-                            </div>
-                        </a>
-                        <a href="#" class="contact-method">
-                            <div class="method-icon">
+                    </div>
+
+                    <div class="connection-node location-node">
+                        <div class="node-header">
+                            <div class="node-icon">
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
-                            <div>
-                                <h4>Location</h4>
-                                <p>Nuremberg, Germany</p>
+                            <div class="node-status">
+                                <span class="status-indicator active"></span>
+                                <span class="status-text" data-en="AVAILABLE" data-de="VERFÜGBAR">AVAILABLE</span>
                             </div>
-                        </a>
+                        </div>
+                        <div class="node-content">
+                            <h4 data-en="Geographic Node" data-de="Geografischer Knoten">Geographic Node</h4>
+                            <p class="node-address">Nuremberg, Germany</p>
+                            <div class="node-metrics">
+                                <span class="metric">
+                                    <i class="fas fa-clock"></i>
+                                    <span data-en="Timezone: CET/CEST" data-de="Zeitzone: MEZ/MESZ">Timezone: CET/CEST</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="node-action disabled">
+                            <span data-en="On-site Collaboration Ready" data-de="Vor-Ort-Zusammenarbeit bereit">On-site Collaboration Ready</span>
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="connection-node ai-insights-node">
+                        <div class="node-header">
+                            <div class="node-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="node-status">
+                                <span class="status-indicator processing"></span>
+                                <span class="status-text" data-en="PROCESSING" data-de="VERARBEITUNG">PROCESSING</span>
+                            </div>
+                        </div>
+                        <div class="node-content">
+                            <h4 data-en="AI Collaboration Engine" data-de="KI-Kollaborations-Engine">AI Collaboration Engine</h4>
+                            <p class="node-address" data-en="Intelligent Project Matching" data-de="Intelligente Projektabstimmung">Intelligent Project Matching</p>
+                            <div class="node-metrics">
+                                <span class="metric">
+                                    <i class="fas fa-cogs"></i>
+                                    <span data-en="Match Score: 98%" data-de="Übereinstimmung: 98%">Match Score: 98%</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="node-action">
+                            <span data-en="View Compatibility Matrix" data-de="Kompatibilitätsmatrix anzeigen">View Compatibility Matrix</span>
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collaboration-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">5</span>
+                            <span class="stat-label" data-en="Industries" data-de="Branchen">Industries</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">10+</span>
+                            <span class="stat-label" data-en="Tech Stacks" data-de="Tech-Stacks">Tech Stacks</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">2</span>
+                            <span class="stat-label" data-en="Continents" data-de="Kontinente">Continents</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label" data-en="Innovation" data-de="Innovation">Innovation</span>
+                        </div>
                     </div>
                 </div>
             </div>
