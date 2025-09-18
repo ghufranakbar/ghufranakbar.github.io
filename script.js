@@ -222,6 +222,23 @@ const optimizedScrollHandler = throttle(() => {
 // Single optimized scroll event listener
 window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
 
+// On mobile, reduce scroll handler work for buttery smoothness
+if (window.innerWidth <= 600) {
+    window.removeEventListener('scroll', optimizedScrollHandler);
+    window.addEventListener('scroll', throttle(() => {
+        // Only navbar background change for mobile
+        const scrollY = window.pageYOffset;
+        const navbar = document.querySelector('.navbar');
+        if (scrollY > 50) {
+            navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.4)';
+        } else {
+            navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
+        }
+    }, 32), { passive: true });
+}
+
 // Intersection Observer for fade-in animations
 const observerOptions = {
     threshold: 0.1,
