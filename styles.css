@@ -3388,12 +3388,18 @@ a, button, .btn, .social-btn, .tech-item, .story-card, .achievement-item {
 }
 
 .typing-animation {
-    animation: typewriter 2s steps(30) infinite;
+    /* Remove problematic animation that causes vertical movement */
+    min-height: 1.5em; /* Fixed height to prevent layout shifts */
+    display: block;
+    overflow: hidden;
+}
+
+.typing-animation .string {
+    display: inline;
 }
 
 @keyframes typewriter {
-    0%, 50% { width: 0; }
-    100% { width: 100%; }
+    /* Disable the old animation */
 }
 
 /* Connection Nodes */

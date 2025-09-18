@@ -282,6 +282,57 @@ window.addEventListener('load', () => {
     }, 1000);
 });
 
+// Delete and rewrite typewriter effect for "Ready to build intelligent solutions!"
+function initContactTypewriter() {
+    const typingElement = document.querySelector('.typing-animation .string');
+    if (!typingElement) return;
+    
+    const messages = [
+        "Ready to build intelligent solutions!",
+        "Passionate about ML Engineering!",
+        "Expert in Data Pipeline Architecture!",
+        "Specialized in Agentic AI Systems!",
+        "Ready to build intelligent solutions!"
+    ];
+    
+    let currentMessageIndex = 0;
+    let isDeleting = false;
+    let currentText = '';
+    let typeSpeed = 100;
+    
+    function typeEffect() {
+        const fullMessage = messages[currentMessageIndex];
+        
+        if (isDeleting) {
+            currentText = fullMessage.substring(0, currentText.length - 1);
+            typeSpeed = 50; // Faster deletion
+        } else {
+            currentText = fullMessage.substring(0, currentText.length + 1);
+            typeSpeed = 100; // Normal typing speed
+        }
+        
+        typingElement.textContent = `"${currentText}"`;
+        
+        if (!isDeleting && currentText === fullMessage) {
+            // Pause at the end of the message
+            typeSpeed = 2000;
+            isDeleting = true;
+        } else if (isDeleting && currentText === '') {
+            isDeleting = false;
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+            typeSpeed = 500; // Pause before typing next message
+        }
+        
+        setTimeout(typeEffect, typeSpeed);
+    }
+    
+    // Start the effect after a delay
+    setTimeout(typeEffect, 2000);
+}
+
+// Initialize the contact typewriter effect
+document.addEventListener('DOMContentLoaded', initContactTypewriter);
+
 // Project card interactions
 document.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('mouseenter', () => {
