@@ -45,7 +45,51 @@ class ScrollAnimations {
 // Initialize enhanced scroll animations
 document.addEventListener('DOMContentLoaded', function() {
     new ScrollAnimations();
+    initTechBackground();
 });
+
+// Tech Background Particles
+function initTechBackground() {
+    const particlesContainer = document.createElement('div');
+    particlesContainer.className = 'tech-particles';
+    document.body.appendChild(particlesContainer);
+    
+    function createParticle() {
+        const particle = document.createElement('div');
+        particle.className = 'tech-particle';
+        
+        // Random starting position
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+        
+        // Random color variation
+        const colors = [
+            'rgba(96, 165, 250, 0.6)',
+            'rgba(168, 85, 247, 0.6)', 
+            'rgba(34, 197, 94, 0.4)',
+            'rgba(251, 191, 36, 0.5)'
+        ];
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        
+        particlesContainer.appendChild(particle);
+        
+        // Remove particle after animation
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, 25000);
+    }
+    
+    // Create initial particles
+    for (let i = 0; i < 20; i++) {
+        setTimeout(() => createParticle(), i * 1000);
+    }
+    
+    // Continuously create new particles
+    setInterval(createParticle, 2000);
+}
 
 // Language Toggle Functionality
 class LanguageToggle {
@@ -571,19 +615,25 @@ class InteractiveLogo {
 // Initialize Interactive Logo
 document.addEventListener('DOMContentLoaded', () => {
     new InteractiveLogo();
-    initAIGame();
+    initTicTacToe();
 });
 
-// AI Mini Game Functionality
+// Tic Tac Toe Game Functionality
 let gameState = {
     isOpen: false,
-    accuracy: 0,
-    epoch: 0,
-    nodes: []
+    board: Array(9).fill(''),
+    currentPlayer: 'X',
+    gameOver: false,
+    playerScore: 0,
+    aiScore: 0
 };
 
-function initAIGame() {
-    createNeuralNodes();
+function initTicTacToe() {
+    const cells = document.querySelectorAll('.board-cell');
+    cells.forEach(cell => {
+        cell.addEventListener('click', handleCellClick);
+    });
+    updateScoreDisplay();
 }
 
 function toggleAIGame() {
@@ -634,259 +684,181 @@ function handleOutsideClick(event) {
     if (event.target === backdrop) {
         toggleAIGame();
     }
-    // Don't close if clicking inside the game or on profile title
-    else if (!gameContainer.contains(event.target) && !profileTitle.contains(event.target)) {
-        // Optional: uncomment the line below if you want to close on any outside click
-        // toggleAIGame();
-    }
 }
 
-function createNeuralNodes() {
-    const nodesContainer = document.getElementById('neural-nodes');
-    gameState.nodes = [];
+function handleCellClick(event) {
+    const cellIndex = parseInt(event.target.dataset.index);
     
-    // Clear existing nodes
-    nodesContainer.innerHTML = '';
-    
-    // Create 36 neural nodes (6x6 grid)
-    for (let i = 0; i < 36; i++) {
-        const node = document.createElement('div');
-        node.className = 'neural-node';
-        node.dataset.index = i;
-        
-        // Add click handler for interactive training
-        node.addEventListener('click', () => activateNode(i));
-        
-        nodesContainer.appendChild(node);
-        gameState.nodes.push({
-            element: node,
-            active: false,
-            weight: Math.random()
-        });
+    if (gameState.board[cellIndex] !== '' || gameState.gameOver) {
+        return;
     }
-}
-
-function activateNode(index) {
-    const node = gameState.nodes[index];
     
-    if (!node.active) {
-        node.element.classList.add('active');
-        node.active = true;
-        
-        // Cascade activation to nearby nodes
+    // Player move
+    makeMove(cellIndex, 'X');
+    
+    if (!gameState.gameOver) {
+        // AI move after a short delay
         setTimeout(() => {
-            cascadeActivation(index);
-        }, 200);
-        
-        // Update accuracy based on activated nodes
-        updateAccuracy();
-    }
-}
-
-function cascadeActivation(centerIndex) {
-    const gridSize = 6;
-    const row = Math.floor(centerIndex / gridSize);
-    const col = centerIndex % gridSize;
-    
-    // Activate adjacent nodes with probability
-    for (let dr = -1; dr <= 1; dr++) {
-        for (let dc = -1; dc <= 1; dc++) {
-            const newRow = row + dr;
-            const newCol = col + dc;
-            
-            if (newRow >= 0 && newRow < gridSize && newCol >= 0 && newCol < gridSize) {
-                const newIndex = newRow * gridSize + newCol;
-                
-                if (newIndex !== centerIndex && Math.random() < 0.4) {
-                    setTimeout(() => {
-                        if (!gameState.nodes[newIndex].active) {
-                            gameState.nodes[newIndex].element.classList.add('active');
-                            gameState.nodes[newIndex].active = true;
-                        }
-                    }, Math.random() * 300);
-                }
+            const aiMove = getBestMove();
+            if (aiMove !== -1) {
+                makeMove(aiMove, 'O');
             }
-        }
+        }, 500);
     }
 }
 
-function trainNetwork() {
-    gameState.epoch++;
-    document.getElementById('epoch').textContent = gameState.epoch;
+function makeMove(index, player) {
+    gameState.board[index] = player;
+    const cell = document.querySelector(`[data-index="${index}"]`);
+    cell.textContent = player;
+    cell.classList.add(player === 'X' ? 'player-x' : 'player-o');
     
-    // Simulate training with animated progress
-    const trainBtn = document.querySelector('.train-btn');
-    const originalText = trainBtn.textContent;
-    trainBtn.style.pointerEvents = 'none';
-    trainBtn.textContent = 'Training...';
-    trainBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+    const winner = checkWinner();
+    if (winner) {
+        gameState.gameOver = true;
+        handleGameEnd(winner);
+    } else if (gameState.board.every(cell => cell !== '')) {
+        gameState.gameOver = true;
+        handleGameEnd('tie');
+    }
+}
+
+function checkWinner() {
+    const lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+        [0, 4, 8], [2, 4, 6] // diagonals
+    ];
     
-    // Add training progress indicator
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-        progress += 2;
-        trainBtn.textContent = `Training... ${progress}% `;
-        
-        if (progress >= 100) {
-            clearInterval(progressInterval);
+    for (let line of lines) {
+        const [a, b, c] = line;
+        if (gameState.board[a] && gameState.board[a] === gameState.board[b] && gameState.board[a] === gameState.board[c]) {
+            // Highlight winning cells
+            line.forEach(index => {
+                document.querySelector(`[data-index="${index}"]`).classList.add('winning');
+            });
+            return gameState.board[a];
         }
-    }, 40);
+    }
+    return null;
+}
+
+function handleGameEnd(result) {
+    const statusElement = document.getElementById('game-status');
+    const gameContainer = document.getElementById('ai-game');
     
-    // Activate random nodes during training with better timing
-    let activationCount = 0;
-    const maxActivations = 12 + Math.floor(Math.random() * 8);
+    if (result === 'X') {
+        statusElement.textContent = '🎉 You won! Great job!';
+        statusElement.style.color = '#60a5fa';
+        gameState.playerScore++;
+        gameContainer.style.animation = 'gameWin 1s ease-in-out';
+    } else if (result === 'O') {
+        statusElement.textContent = '🤖 AI wins! Try again!';
+        statusElement.style.color = '#f59e0b';
+        gameState.aiScore++;
+    } else {
+        statusElement.textContent = '🤝 It\'s a tie! Good game!';
+        statusElement.style.color = '#22c55e';
+    }
     
-    const trainingInterval = setInterval(() => {
-        const randomIndex = Math.floor(Math.random() * gameState.nodes.length);
-        if (!gameState.nodes[randomIndex].active && Math.random() < 0.4) {
-            activateNode(randomIndex);
-            activationCount++;
-        }
-        
-        if (activationCount >= maxActivations) {
-            clearInterval(trainingInterval);
-        }
-    }, 120);
+    updateScoreDisplay();
     
-    // Complete training after 2.5 seconds
     setTimeout(() => {
-        clearInterval(trainingInterval);
-        clearInterval(progressInterval);
-        
-        trainBtn.style.pointerEvents = 'auto';
-        trainBtn.textContent = originalText;
-        trainBtn.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b, #d97706)';
-        
-        // Boost accuracy with smooth animation
-        const targetAccuracy = Math.min(100, gameState.accuracy + Math.floor(Math.random() * 20) + 15);
-        animateAccuracy(gameState.accuracy, targetAccuracy);
-        
-        // Reset some nodes for next training
-        if (targetAccuracy >= 95) {
-            setTimeout(() => {
-                celebrateSuccess();
-            }, 800);
-        }
-    }, 2500);
+        gameContainer.style.animation = '';
+    }, 1000);
 }
 
-function animateAccuracy(fromValue, toValue) {
-    const duration = 1000;
-    const startTime = Date.now();
-    const accuracyElement = document.getElementById('accuracy');
+function getBestMove() {
+    // Simple AI with minimax algorithm
+    let bestScore = -Infinity;
+    let bestMove = -1;
     
-    function updateAccuracy() {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Use easing function for smooth animation
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
-        const currentValue = Math.floor(fromValue + (toValue - fromValue) * easedProgress);
-        
-        accuracyElement.textContent = currentValue;
-        accuracyElement.style.transform = `scale(${1 + Math.sin(progress * Math.PI) * 0.1})`;
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateAccuracy);
-        } else {
-            gameState.accuracy = toValue;
-            accuracyElement.style.transform = 'scale(1)';
-        }
-    }
-    
-    updateAccuracy();
-}
-
-function updateAccuracy() {
-    const activeNodes = gameState.nodes.filter(node => node.active).length;
-    const totalNodes = gameState.nodes.length;
-    
-    gameState.accuracy = Math.floor((activeNodes / totalNodes) * 100);
-    document.getElementById('accuracy').textContent = gameState.accuracy;
-}
-
-function celebrateSuccess() {
-    // Create success animation
-    const gameContainer = document.getElementById('ai-game');
-    gameContainer.style.animation = 'ai-success-celebration 1.5s ease-in-out';
-    
-    // Add particle effect
-    createParticleEffect();
-    
-    // Show success message with typewriter effect
-    const header = document.querySelector('.ai-game-header h3');
-    const originalText = header.textContent;
-    header.style.color = '#00ff88';
-    
-    typewriterEffect(header, 'AI Training Complete! Neural Network Optimized! ', 50)
-        .then(() => {
-            // Restore original state after celebration
-            setTimeout(() => {
-                header.style.color = '#fbbf24';
-                typewriterEffect(header, originalText, 30);
-                gameContainer.style.animation = '';
-                
-                // Reset game for next round
-                setTimeout(() => {
-                    resetGame();
-                }, 1500);
-            }, 2500);
-        });
-}
-
-function typewriterEffect(element, text, speed) {
-    return new Promise((resolve) => {
-        element.textContent = '';
-        let i = 0;
-        
-        const typeInterval = setInterval(() => {
-            element.textContent += text.charAt(i);
-            i++;
+    for (let i = 0; i < 9; i++) {
+        if (gameState.board[i] === '') {
+            gameState.board[i] = 'O';
+            let score = minimax(gameState.board, 0, false);
+            gameState.board[i] = '';
             
-            if (i >= text.length) {
-                clearInterval(typeInterval);
-                resolve();
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = i;
             }
-        }, speed);
-    });
+        }
+    }
+    
+    return bestMove;
 }
 
-function createParticleEffect() {
-    const gameContainer = document.getElementById('ai-game');
+function minimax(board, depth, isMaximizing) {
+    const winner = checkWinnerForMinimax(board);
     
-    for (let i = 0; i < 15; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #fbbf24;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1001;
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            animation: particle-float ${2 + Math.random() * 2}s ease-out forwards;
-        `;
-        
-        gameContainer.appendChild(particle);
-        
-        // Remove particle after animation
-        setTimeout(() => {
-            if (particle.parentNode) {
-                particle.parentNode.removeChild(particle);
+    if (winner === 'O') return 1;
+    if (winner === 'X') return -1;
+    if (board.every(cell => cell !== '')) return 0;
+    
+    if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < 9; i++) {
+            if (board[i] === '') {
+                board[i] = 'O';
+                let score = minimax(board, depth + 1, false);
+                board[i] = '';
+                bestScore = Math.max(score, bestScore);
             }
-        }, 4000);
+        }
+        return bestScore;
+    } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < 9; i++) {
+            if (board[i] === '') {
+                board[i] = 'X';
+                let score = minimax(board, depth + 1, true);
+                board[i] = '';
+                bestScore = Math.min(score, bestScore);
+            }
+        }
+        return bestScore;
     }
+}
+
+function checkWinnerForMinimax(board) {
+    const lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+        [0, 4, 8], [2, 4, 6] // diagonals
+    ];
+    
+    for (let line of lines) {
+        const [a, b, c] = line;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return board[a];
+        }
+    }
+    return null;
 }
 
 function resetGame() {
-    gameState.nodes.forEach(node => {
-        node.element.classList.remove('active');
-        node.active = false;
-        node.weight = Math.random();
+    gameState.board = Array(9).fill('');
+    gameState.gameOver = false;
+    
+    const cells = document.querySelectorAll('.board-cell');
+    cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('player-x', 'player-o', 'winning');
     });
     
-    gameState.accuracy = 0;
-    document.getElementById('accuracy').textContent = '0';
+    document.getElementById('game-status').textContent = 'Your turn! Click a square to play.';
+    document.getElementById('game-status').style.color = '#fbbf24';
+}
+
+function resetScore() {
+    gameState.playerScore = 0;
+    gameState.aiScore = 0;
+    updateScoreDisplay();
+    resetGame();
+}
+
+function updateScoreDisplay() {
+    document.getElementById('player-score').textContent = gameState.playerScore;
+    document.getElementById('ai-score').textContent = gameState.aiScore;
 }

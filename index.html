@@ -95,19 +95,32 @@
                                     <span class="cursor-blink">|</span>
                                 </p>
                                 
-                                <!-- AI Mini Game Modal -->
+                                <!-- Tic Tac Toe AI Game Modal -->
                                 <div id="ai-game-backdrop" class="ai-game-backdrop"></div>
                                 <div id="ai-game" class="ai-game-container">
                                     <div class="ai-game-header">
-                                        <h3>🤖 AI Neural Network Training</h3>
+                                        <h3>🎮 Tic Tac Toe vs AI</h3>
                                         <button onclick="toggleAIGame()" class="close-game">×</button>
                                     </div>
                                     <div class="ai-game-content">
-                                        <div class="neural-nodes" id="neural-nodes"></div>
-                                        <div class="game-stats">
-                                            <p>Accuracy: <span id="accuracy">0</span>%</p>
-                                            <p>Epoch: <span id="epoch">0</span></p>
-                                            <button onclick="trainNetwork()" class="train-btn">Train AI</button>
+                                        <div class="game-status">
+                                            <p id="game-status">Your turn! Click a square to play.</p>
+                                            <p>You: <span id="player-score">0</span> | AI: <span id="ai-score">0</span></p>
+                                        </div>
+                                        <div class="tic-tac-toe-board" id="tic-tac-toe-board">
+                                            <div class="board-cell" data-index="0"></div>
+                                            <div class="board-cell" data-index="1"></div>
+                                            <div class="board-cell" data-index="2"></div>
+                                            <div class="board-cell" data-index="3"></div>
+                                            <div class="board-cell" data-index="4"></div>
+                                            <div class="board-cell" data-index="5"></div>
+                                            <div class="board-cell" data-index="6"></div>
+                                            <div class="board-cell" data-index="7"></div>
+                                            <div class="board-cell" data-index="8"></div>
+                                        </div>
+                                        <div class="game-controls">
+                                            <button onclick="resetGame()" class="reset-btn">New Game</button>
+                                            <button onclick="resetScore()" class="reset-score-btn">Reset Score</button>
                                         </div>
                                     </div>
                                 </div>
