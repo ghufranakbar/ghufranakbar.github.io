@@ -1,3 +1,30 @@
+// Page load animation
+window.addEventListener('load', function() {
+    document.body.classList.add('loaded');
+    
+    // Set current year in footer
+    const yearElement = document.getElementById('year');
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    }
+});
+
+// Navbar scroll effect
+let lastScroll = 0;
+const navbar = document.querySelector('.navbar');
+
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll > 100) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+    
+    lastScroll = currentScroll;
+});
+
 // Smooth scrolling for navigation links with enhanced easing
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -42,53 +69,17 @@ class ScrollAnimations {
     }
 }
 
-// Initialize enhanced scroll animations
+// Page load animation
 document.addEventListener('DOMContentLoaded', function() {
+    document.body.classList.add('loaded');
     new ScrollAnimations();
     initTechBackground();
 });
 
-// Tech Background Particles
+// Tech Background Particles - Disabled for clean professional look
 function initTechBackground() {
-    const particlesContainer = document.createElement('div');
-    particlesContainer.className = 'tech-particles';
-    document.body.appendChild(particlesContainer);
-    
-    function createParticle() {
-        const particle = document.createElement('div');
-        particle.className = 'tech-particle';
-        
-        // Random starting position
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 15 + 's';
-        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-        
-        // Random color variation
-        const colors = [
-            'rgba(96, 165, 250, 0.6)',
-            'rgba(168, 85, 247, 0.6)', 
-            'rgba(34, 197, 94, 0.4)',
-            'rgba(251, 191, 36, 0.5)'
-        ];
-        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-        
-        particlesContainer.appendChild(particle);
-        
-        // Remove particle after animation
-        setTimeout(() => {
-            if (particle.parentNode) {
-                particle.parentNode.removeChild(particle);
-            }
-        }, 25000);
-    }
-    
-    // Create initial particles
-    for (let i = 0; i < 20; i++) {
-        setTimeout(() => createParticle(), i * 1000);
-    }
-    
-    // Continuously create new particles
-    setInterval(createParticle, 2000);
+    // Particle animations disabled for a cleaner, more professional appearance
+    return;
 }
 
 // Language Toggle Functionality
@@ -123,9 +114,22 @@ class LanguageToggle {
         translatableElements.forEach(element => {
             const translation = element.getAttribute(`data-${lang}`);
             if (translation) {
-                element.textContent = translation;
+                // Only update if content is actually different (case-insensitive comparison)
+                // This prevents unnecessary updates of technical terms that are same in both languages
+                const currentText = element.textContent.trim();
+                const newText = translation.trim();
+                
+                if (currentText.toLowerCase() !== newText.toLowerCase()) {
+                    element.textContent = translation;
+                }
             }
         });
+
+        // Update project link texts
+        this.updateProjectLinks(lang);
+        
+        // Update certification texts
+        this.updateCertificationTexts(lang);
 
         // Update button appearance
         this.updateToggleButton();
@@ -134,6 +138,91 @@ class LanguageToggle {
         document.documentElement.lang = lang;
         const title = lang === 'en' ? 'Muhammad Ghufran Akbar - Portfolio' : 'Muhammad Ghufran Akbar - Portfolio';
         document.title = title;
+    }
+
+    updateProjectLinks(lang) {
+        const translations = {
+            en: {
+                'Live Demo': 'Live Demo',
+                'GitHub': 'GitHub',
+                'Repo': 'Repo',
+                'Code': 'Code',
+                'Internal': 'Internal'
+            },
+            de: {
+                'Live Demo': 'Live-Demo',
+                'GitHub': 'GitHub',
+                'Repo': 'Repository',
+                'Code': 'Code',
+                'Internal': 'Intern'
+            }
+        };
+
+        // Update all project link texts
+        document.querySelectorAll('.project-link').forEach(link => {
+            const text = link.textContent.trim().replace(/\s+/g, ' ');
+            for (const [en, de] of Object.entries(translations.en)) {
+                if (text.includes(en)) {
+                    const icon = link.querySelector('i');
+                    const iconHtml = icon ? icon.outerHTML : '';
+                    link.innerHTML = iconHtml + ' ' + (lang === 'en' ? en : translations.de[en]);
+                    break;
+                }
+            }
+        });
+    }
+
+    updateCertificationTexts(lang) {
+        const translations = {
+            en: {
+                'View Certificate': 'View Certificate',
+                'Issued': 'Issued',
+                'Credential ID': 'Credential ID',
+                'Certified': 'Certified'
+            },
+            de: {
+                'View Certificate': 'Zertifikat ansehen',
+                'Issued': 'Ausgestellt',
+                'Credential ID': 'Zertifikats-ID',
+                'Certified': 'Zertifiziert'
+            }
+        };
+
+        // Update certification links
+        document.querySelectorAll('.cert-link').forEach(link => {
+            if (link.textContent.includes('View Certificate')) {
+                const icon = link.querySelector('i');
+                const iconHtml = icon ? icon.outerHTML : '';
+                link.innerHTML = iconHtml + ' ' + translations[lang]['View Certificate'];
+            }
+        });
+
+        // Update certification date texts
+        document.querySelectorAll('.cert-date').forEach(elem => {
+            const text = elem.textContent;
+            if (lang === 'de') {
+                elem.textContent = text.replace('Issued', translations.de['Issued']);
+            } else {
+                elem.textContent = text.replace('Ausgestellt', translations.en['Issued']);
+            }
+        });
+
+        // Update credential ID texts
+        document.querySelectorAll('.cert-id').forEach(elem => {
+            const text = elem.textContent;
+            if (lang === 'de') {
+                elem.textContent = text.replace('Credential ID', translations.de['Credential ID']);
+            } else {
+                elem.textContent = text.replace('Zertifikats-ID', translations.en['Credential ID']);
+            }
+        });
+
+        // Update certification status texts
+        document.querySelectorAll('.cert-status').forEach(elem => {
+            if (elem.textContent.trim() === 'Certified' || elem.textContent.trim() === 'Zertifiziert') {
+                elem.textContent = translations[lang]['Certified'];
+            }
+        });
     }
 
     updateToggleButton() {
@@ -862,3 +951,21 @@ function updateScoreDisplay() {
     document.getElementById('player-score').textContent = gameState.playerScore;
     document.getElementById('ai-score').textContent = gameState.aiScore;
 }
+
+// Scroll to Top Button Functionality
+const scrollTopBtn = document.getElementById('scroll-top');
+
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 500) {
+        scrollTopBtn.classList.add('visible');
+    } else {
+        scrollTopBtn.classList.remove('visible');
+    }
+});
+
+scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
