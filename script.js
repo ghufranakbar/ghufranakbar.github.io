@@ -287,20 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', ensureButtonVisibility);
 });
 
-// Mobile navigation toggle
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
-
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
+// Mobile navigation is handled by initMobileNavigation() function below
 
 // Optimized scroll handlers combined for better performance
 function throttle(func, limit) {
@@ -968,4 +955,611 @@ scrollTopBtn.addEventListener('click', () => {
         top: 0,
         behavior: 'smooth'
     });
+});
+// ========================================
+// VISUALIZATION INTERACTIVITY
+// ========================================
+
+// Pipeline Stage Interactions
+function initPipelineInteractions() {
+    const pipelineStages = document.querySelectorAll('.pipeline-stage');
+    const metricCards = document.querySelectorAll('.metric-card');
+    
+    pipelineStages.forEach((stage, index) => {
+        // Hover effect - highlight connected stages
+        stage.addEventListener('mouseenter', () => {
+            pipelineStages.forEach((s, i) => {
+                if (Math.abs(i - index) <= 1) {
+                    s.style.opacity = '1';
+                } else {
+                    s.style.opacity = '0.5';
+                }
+            });
+        });
+        
+        stage.addEventListener('mouseleave', () => {
+            pipelineStages.forEach(s => {
+                s.style.opacity = '1';
+            });
+        });
+        
+        // Click effect - show stage details
+        stage.addEventListener('click', () => {
+            showStageTooltip(stage, index);
+        });
+        
+        // Add cursor pointer
+        stage.style.cursor = 'pointer';
+    });
+    
+    // Metric cards counter animation
+    metricCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            const valueElement = card.querySelector('.metric-value');
+            const originalValue = valueElement.textContent;
+            
+            // Add pulse effect
+            valueElement.style.transform = 'scale(1.1)';
+            
+            setTimeout(() => {
+                valueElement.style.transform = 'scale(1)';
+            }, 300);
+        });
+    });
+}
+
+function showStageTooltip(stage, index) {
+    const existingTooltip = document.querySelector('.pipeline-tooltip');
+    if (existingTooltip) existingTooltip.remove();
+    
+    const stageTitle = stage.querySelector('h3').textContent;
+    const stageDesc = stage.querySelector('p').textContent;
+    const techTags = Array.from(stage.querySelectorAll('.tech-tags span'))
+        .map(tag => tag.textContent)
+        .join(', ');
+    
+    const stageInfo = [
+        { title: 'Unified Data Collection', details: 'Eliminated data silos by integrating 20+ sources into a centralized platform, reducing data inconsistency by 85%' },
+        { title: 'Scalable Analytics', details: 'Enabled instant business intelligence with sub-second query performance on 10TB+ datasets, empowering data-driven decisions' },
+        { title: 'Data Quality & Consistency', details: 'Implemented automated data validation across 500+ models, ensuring 99.9% data accuracy for critical business metrics' },
+        { title: 'Intelligent Automation', details: 'Built self-monitoring workflows that detect and resolve 95% of issues automatically, minimizing manual intervention' },
+        { title: 'Predictive Intelligence', details: 'Deployed ML models that forecast demand patterns and optimize inventory, reducing stockouts by 30%' },
+        { title: 'Zero-Downtime Delivery', details: 'Achieved continuous deployment with automated health checks and instant rollback, maintaining 99.99% uptime' }
+    ];
+    
+    const isMobile = window.innerWidth <= 768;
+    
+    const tooltip = document.createElement('div');
+    tooltip.className = 'pipeline-tooltip';
+    tooltip.innerHTML = `
+        <div style="background: rgba(15, 23, 42, 0.98); border: 2px solid rgba(96, 165, 250, 0.6); 
+                    border-radius: 16px; padding: ${isMobile ? '15px' : '20px'}; color: #e2e8f0; font-size: ${isMobile ? '0.85rem' : '0.95rem'};
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.6); backdrop-filter: blur(20px);
+                    position: fixed; z-index: 10000; max-width: ${isMobile ? '90vw' : '350px'}; animation: tooltipFadeIn 0.3s ease;">
+            <div style="font-weight: 700; margin-bottom: 10px; color: #60a5fa; font-size: ${isMobile ? '1rem' : '1.1rem'};">
+                <i class="fas fa-${getStageIcon(index)}"></i> ${stageTitle}
+            </div>
+            <div style="font-size: ${isMobile ? '0.85rem' : '0.9rem'}; color: #cbd5e1; margin-bottom: 12px; line-height: 1.6;">
+                ${stageInfo[index].details}
+            </div>
+            <div style="padding-top: 10px; border-top: 1px solid rgba(96, 165, 250, 0.2);">
+                <div style="font-size: 0.85rem; color: #94a3b8; font-weight: 600; margin-bottom: 6px;">
+                    Technologies:
+                </div>
+                <div style="font-size: 0.85rem; color: #60a5fa;">
+                    ${techTags}
+                </div>
+            </div>
+            ${isMobile ? '<div style="margin-top: 10px; text-align: center; font-size: 0.75rem; color: #64748b;">Tap to close</div>' : ''}
+        </div>
+    `;
+    
+    document.body.appendChild(tooltip);
+    
+    // Position tooltip
+    const tooltipElement = tooltip.firstElementChild;
+    const rect = stage.getBoundingClientRect();
+    
+    if (isMobile) {
+        // Center on mobile
+        tooltipElement.style.top = '50%';
+        tooltipElement.style.left = '50%';
+        tooltipElement.style.transform = 'translate(-50%, -50%)';
+    } else {
+        tooltipElement.style.top = `${rect.top + window.scrollY - 20}px`;
+        tooltipElement.style.left = `${rect.right + 20}px`;
+        
+        // Adjust if tooltip goes off-screen
+        setTimeout(() => {
+            const tooltipRect = tooltipElement.getBoundingClientRect();
+            if (tooltipRect.right > window.innerWidth) {
+                tooltipElement.style.left = `${rect.left - tooltipRect.width - 20}px`;
+            }
+        }, 0);
+    }
+    
+    // Auto-remove after 4 seconds or on click
+    const removeTooltip = () => tooltip.remove();
+    setTimeout(removeTooltip, isMobile ? 5000 : 4000);
+    tooltip.addEventListener('click', removeTooltip);
+}
+
+function getStageIcon(index) {
+    const icons = ['database', 'warehouse', 'code-branch', 'project-diagram', 'brain', 'rocket'];
+    return icons[index] || 'cog';
+}
+
+// Agentic AI Node Interactions
+function initAgenticInteractions() {
+    const agentNodes = document.querySelectorAll('.agent-node');
+    const connectionPaths = document.querySelectorAll('.connection-path');
+    
+    agentNodes.forEach((node, index) => {
+        node.addEventListener('mouseenter', () => {
+            // Animate connection lines
+            connectionPaths.forEach((path, pathIndex) => {
+                if (pathIndex === index - 1) {
+                    path.style.strokeWidth = '3';
+                    path.style.opacity = '1';
+                } else {
+                    path.style.opacity = '0.3';
+                }
+            });
+        });
+        
+        node.addEventListener('mouseleave', () => {
+            connectionPaths.forEach(path => {
+                path.style.strokeWidth = '2';
+                path.style.opacity = '0.6';
+            });
+        });
+    });
+}
+
+// DAG Task Interactions with Status Simulation
+function initDAGInteractions() {
+    const dagTasks = document.querySelectorAll('.dag-task');
+    
+    dagTasks.forEach(task => {
+        task.addEventListener('click', () => {
+            const taskStatus = task.querySelector('.task-status');
+            const currentStatus = taskStatus.classList.contains('running') ? 'running' :
+                                 taskStatus.classList.contains('pending') ? 'pending' :
+                                 taskStatus.classList.contains('success') ? 'success' : 'failed';
+            
+            // Create tooltip with task details
+            showTaskTooltip(task, currentStatus);
+        });
+    });
+    
+    // Simulate DAG execution flow
+    if (document.querySelector('.dag-workflow')) {
+        setTimeout(() => animateDAGFlow(), 2000);
+    }
+}
+
+function showTaskTooltip(task, status) {
+    const existingTooltip = document.querySelector('.dag-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+    
+    const taskTitle = task.querySelector('.task-title').textContent;
+    const taskTime = task.querySelector('.task-time').textContent;
+    
+    const tooltip = document.createElement('div');
+    tooltip.className = 'dag-tooltip';
+    tooltip.innerHTML = `
+        <div style="background: rgba(15, 23, 42, 0.95); border: 2px solid rgba(96, 165, 250, 0.5); 
+                    border-radius: 12px; padding: 15px; color: #e2e8f0; font-size: 0.9rem;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+                    position: absolute; z-index: 1000; min-width: 200px;">
+            <div style="font-weight: 600; margin-bottom: 8px; color: #60a5fa;">${taskTitle}</div>
+            <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 5px;">
+                <i class="fas fa-clock"></i> Duration: ${taskTime}
+            </div>
+            <div style="font-size: 0.85rem; color: #94a3b8;">
+                <i class="fas fa-info-circle"></i> Status: ${status.charAt(0).toUpperCase() + status.slice(1)}
+            </div>
+        </div>
+    `;
+    
+    task.appendChild(tooltip);
+    
+    const tooltipElement = tooltip.firstElementChild;
+    const taskRect = task.getBoundingClientRect();
+    tooltipElement.style.top = '-120px';
+    tooltipElement.style.left = '50%';
+    tooltipElement.style.transform = 'translateX(-50%)';
+    
+    setTimeout(() => {
+        tooltip.remove();
+    }, 3000);
+}
+
+function animateDAGFlow() {
+    const tasks = document.querySelectorAll('.dag-task');
+    const statuses = ['running', 'pending', 'success', 'failed'];
+    
+    let currentIndex = 0;
+    
+    const interval = setInterval(() => {
+        if (currentIndex >= tasks.length) {
+            clearInterval(interval);
+            return;
+        }
+        
+        const task = tasks[currentIndex];
+        const statusIndicator = task.querySelector('.task-status');
+        
+        // Remove all status classes
+        statusIndicator.classList.remove('success', 'running', 'pending', 'failed');
+        
+        // Add running status
+        statusIndicator.classList.add('running');
+        
+        // After a delay, mark as success
+        setTimeout(() => {
+            statusIndicator.classList.remove('running');
+            statusIndicator.classList.add('success');
+        }, 1500);
+        
+        currentIndex++;
+    }, 2000);
+}
+
+// Scroll-triggered animations for visualizations
+function initVisualizationScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.2,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // Trigger specific animations based on section
+                if (entry.target.classList.contains('pipeline-viz-section')) {
+                    animatePipelineStages();
+                }
+                
+                if (entry.target.classList.contains('agentic-viz-section')) {
+                    animateAgentNodes();
+                }
+                
+                if (entry.target.classList.contains('dag-viz-section')) {
+                    animateDAGTasks();
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all visualization sections
+    document.querySelectorAll('.pipeline-viz-section, .agentic-viz-section, .dag-viz-section').forEach(section => {
+        observer.observe(section);
+    });
+}
+
+function animatePipelineStages() {
+    const stages = document.querySelectorAll('.pipeline-stage');
+    stages.forEach((stage, index) => {
+        setTimeout(() => {
+            stage.style.opacity = '1';
+            stage.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+}
+
+function animateAgentNodes() {
+    const nodes = document.querySelectorAll('.agent-node');
+    nodes.forEach((node, index) => {
+        setTimeout(() => {
+            node.style.opacity = '1';
+            node.style.transform = 'scale(1)';
+        }, index * 150);
+    });
+}
+
+function animateDAGTasks() {
+    const tasks = document.querySelectorAll('.dag-task');
+    tasks.forEach((task, index) => {
+        setTimeout(() => {
+            task.style.opacity = '1';
+            task.style.transform = 'translateX(0)';
+        }, index * 100);
+    });
+}
+
+// Add hover effects to tech tags
+function initTechTagInteractions() {
+    const techTags = document.querySelectorAll('.tech-tags span');
+    
+    techTags.forEach(tag => {
+        tag.addEventListener('mouseenter', () => {
+            tag.style.transform = 'translateY(-3px) scale(1.05)';
+        });
+        
+        tag.addEventListener('mouseleave', () => {
+            tag.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+}
+
+// Add pulse animation to metric cards
+function initMetricCardAnimations() {
+    const metricCards = document.querySelectorAll('.metric-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const value = entry.target.querySelector('.metric-value');
+                if (value) {
+                    // Animate number counting
+                    animateValue(value);
+                }
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    metricCards.forEach(card => observer.observe(card));
+}
+
+function animateValue(element) {
+    const text = element.textContent;
+    const isPercentage = text.includes('%');
+    const number = parseInt(text.replace(/\D/g, ''));
+    
+    if (isNaN(number)) return;
+    
+    const duration = 2000;
+    const steps = 60;
+    const stepValue = number / steps;
+    let current = 0;
+    
+    const timer = setInterval(() => {
+        current += stepValue;
+        if (current >= number) {
+            element.textContent = isPercentage ? `${number}%` : text;
+            clearInterval(timer);
+        } else {
+            element.textContent = isPercentage ? `${Math.floor(current)}%` : Math.floor(current);
+        }
+    }, duration / steps);
+}
+
+// Initialize all visualization interactions
+document.addEventListener('DOMContentLoaded', () => {
+    initPipelineInteractions();
+    initAgenticInteractions();
+    initDAGInteractions();
+    initVisualizationScrollAnimations();
+    initTechTagInteractions();
+    initMetricCardAnimations();
+    initRippleEffect();
+    initSmoothScrolling();
+    initProjectCardInteractions();
+    initResponsiveOptimizations();
+    initMobileNavigation();
+});
+
+// Mobile Navigation Enhancement
+function initMobileNavigation() {
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    if (hamburger) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.style.overflow = hamburger.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        // Close menu when clicking nav links
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target) && navMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+}
+
+// Responsive Optimizations
+function initResponsiveOptimizations() {
+    let isMobile = window.innerWidth <= 768;
+    let isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+    
+    // Disable some animations on mobile for better performance
+    if (isMobile) {
+        // Simplify tooltips for touch devices
+        document.querySelectorAll('.pipeline-stage').forEach(stage => {
+            stage.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const existingTooltip = document.querySelector('.pipeline-tooltip');
+                if (existingTooltip) {
+                    existingTooltip.remove();
+                } else {
+                    const index = Array.from(document.querySelectorAll('.pipeline-stage')).indexOf(stage);
+                    showStageTooltip(stage, index);
+                }
+            });
+        });
+    }
+    
+    // Handle orientation change
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            isMobile = window.innerWidth <= 768;
+            isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+            
+            // Re-adjust layout
+            document.querySelectorAll('.pipeline-tooltip, .dag-tooltip').forEach(tooltip => {
+                tooltip.remove();
+            });
+        }, 200);
+    });
+    
+    // Optimize scroll performance on mobile
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        if (isMobile) {
+            document.body.classList.add('scrolling');
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                document.body.classList.remove('scrolling');
+            }, 100);
+        }
+    }, { passive: true });
+}
+
+// Add ripple effect to interactive elements
+function initRippleEffect() {
+    const rippleElements = document.querySelectorAll('.pipeline-stage, .metric-card, .agent-node, .dag-task, .tech-detail-card, .project-card');
+    
+    rippleElements.forEach(element => {
+        element.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                border-radius: 50%;
+                background: rgba(96, 165, 250, 0.4);
+                left: ${x}px;
+                top: ${y}px;
+                pointer-events: none;
+                animation: rippleEffect 0.6s ease-out;
+            `;
+            
+            this.style.position = 'relative';
+            this.style.overflow = 'hidden';
+            this.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+}
+
+// Smooth scrolling for all anchor links
+function initSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// Enhanced project card interactions
+function initProjectCardInteractions() {
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    projectCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-10px) scale(1.02)';
+            card.style.boxShadow = '0 20px 60px rgba(96, 165, 250, 0.3)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) scale(1)';
+            card.style.boxShadow = '';
+        });
+    });
+}
+
+// Add mobile touch support for visualizations
+if ('ontouchstart' in window) {
+    document.querySelectorAll('.pipeline-stage, .agent-node, .dag-task').forEach(element => {
+        element.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.95)';
+        });
+        
+        element.addEventListener('touchend', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
+}
+// Tech Radar Interactions
+function initTechRadarInteractions() {
+    const radarPoints = document.querySelectorAll('.radar-point');
+    const techCards = document.querySelectorAll('.tech-detail-card');
+    
+    radarPoints.forEach(point => {
+        const skillType = point.getAttribute('data-skill');
+        
+        point.addEventListener('mouseenter', () => {
+            techCards.forEach(card => {
+                if (card.classList.contains(skillType)) {
+                    card.style.transform = 'translateY(-8px) scale(1.02)';
+                    card.style.borderColor = 'rgba(96, 165, 250, 0.6)';
+                    card.style.boxShadow = '0 15px 50px rgba(96, 165, 250, 0.3)';
+                } else {
+                    card.style.opacity = '0.5';
+                }
+            });
+        });
+        
+        point.addEventListener('mouseleave', () => {
+            techCards.forEach(card => {
+                card.style.transform = '';
+                card.style.borderColor = '';
+                card.style.boxShadow = '';
+                card.style.opacity = '1';
+            });
+        });
+    });
+    
+    techCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            const cardClass = Array.from(card.classList).find(c => 
+                ['ml', 'cloud', 'data', 'devops', 'backend', 'frontend'].includes(c)
+            );
+            
+            if (cardClass) {
+                const correspondingPoint = document.querySelector(`.radar-point[data-skill="${cardClass}"]`);
+                if (correspondingPoint) {
+                    correspondingPoint.setAttribute('r', '9');
+                }
+            }
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            radarPoints.forEach(point => {
+                point.setAttribute('r', '6');
+            });
+        });
+    });
+}
+
+// Update DOMContentLoaded to include tech radar
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        if (typeof initTechRadarInteractions === 'function') {
+            initTechRadarInteractions();
+        }
+    }, 500);
 });

@@ -1,0 +1,44 @@
+/* TEAM */
+Developer: Muhammad Ghufran Akbar (Ghufran Akbar)
+Role: ML Engineer & Data Engineer
+Location: Nuremberg, Bavaria, Germany
+Email: ghufran.akbar99@gmail.com
+LinkedIn: linkedin.com/in/ghufranakbar
+GitHub: github.com/ghufranakbar
+Website: ghufranakbar.github.io
+
+/* SITE */
+Site Name: Muhammad Ghufran Akbar Portfolio
+Language: English / Deutsch (German)
+Standards: HTML5, CSS3, JavaScript ES6+
+Components: Interactive visualizations, responsive design
+Tech Stack: HTML, CSS, JavaScript, Font Awesome, Google Fonts
+IDE: Visual Studio Code
+
+/* COMPANY */
+Current Employer: PUMA GROUP
+Position: Global Ecommerce Engineering - Working Student
+Location: Nuremberg, Germany
+
+/* EXPERTISE */
+Machine Learning Engineering
+Data Engineering & ETL/ELT
+Agentic AI & LLM Applications
+Cloud Architecture (GCP)
+Vertex AI & BigQuery
+Apache Airflow & dbt
+Terraform Infrastructure as Code
+Python & SQL Development
+MLOps & CI/CD Pipelines
+
+/* EDUCATION */
+M.Sc International Information Systems - Friedrich-Alexander University (FAU)
+B.E Software Engineering - Ghulam Ishaq Khan Institute (GIKI)
+
+/* LOCATION */
+Based in: Nuremberg (Nürnberg), Bavaria, Germany
+Country: Germany
+Region: Europe
+
+/* LAST UPDATE */
+Date: 2025-12-30
