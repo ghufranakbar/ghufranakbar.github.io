@@ -1,3 +1,18 @@
+// Theme Toggle
+const themeToggle = document.getElementById('theme-toggle');
+const root = document.documentElement;
+
+// Set theme from localStorage or default to dark
+const currentTheme = localStorage.getItem('theme') || 'dark';
+root.setAttribute('data-theme', currentTheme);
+
+themeToggle.addEventListener('click', () => {
+    const theme = root.getAttribute('data-theme');
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+});
+
 // Page load animation
 window.addEventListener('load', function() {
     document.body.classList.add('loaded');
@@ -309,13 +324,7 @@ const optimizedScrollHandler = throttle(() => {
     const navbar = document.querySelector('.navbar');
     
     // Navbar background change
-    if (scrollY > 50) {
-        navbar.style.background = 'rgba(15, 23, 42, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.4)';
-    } else {
-        navbar.style.background = 'rgba(15, 23, 42, 0.95)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
-    }
+    // CSS variables handle theming automatically
     
     // Active navigation link highlighting
     const sections = document.querySelectorAll('section[id]');
@@ -346,16 +355,7 @@ window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
 if (window.innerWidth <= 600) {
     window.removeEventListener('scroll', optimizedScrollHandler);
     window.addEventListener('scroll', throttle(() => {
-        // Only navbar background change for mobile
-        const scrollY = window.pageYOffset;
-        const navbar = document.querySelector('.navbar');
-        if (scrollY > 50) {
-            navbar.style.background = 'rgba(15, 23, 42, 0.98)';
-            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.4)';
-        } else {
-            navbar.style.background = 'rgba(15, 23, 42, 0.95)';
-            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
-        }
+        // CSS variables handle theming automatically
     }, 32), { passive: true });
 }
 

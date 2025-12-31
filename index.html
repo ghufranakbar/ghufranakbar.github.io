@@ -181,6 +181,22 @@
                 <li><a href="#contact" class="nav-link" data-en="Contact" data-de="Kontakt">Contact</a></li>
             </ul>
             <div class="nav-controls">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
                 <div class="language-toggle">
                     <button id="lang-toggle" class="lang-btn active" data-lang="en">
                         <span class="lang-text">EN</span>
@@ -233,36 +249,6 @@
                                     <span class="code-bracket">/&gt;</span>
                                     <span class="cursor-blink">|</span>
                                 </p>
-                                
-                                <!-- Tic Tac Toe AI Game Modal -->
-                                <div id="ai-game-backdrop" class="ai-game-backdrop"></div>
-                                <div id="ai-game" class="ai-game-container">
-                                    <div class="ai-game-header">
-                                        <h3>🎮 Tic Tac Toe vs AI</h3>
-                                        <button onclick="toggleAIGame()" class="close-game">×</button>
-                                    </div>
-                                    <div class="ai-game-content">
-                                        <div class="game-status">
-                                            <p id="game-status">Your turn! Click a square to play.</p>
-                                            <p>You: <span id="player-score">0</span> | AI: <span id="ai-score">0</span></p>
-                                        </div>
-                                        <div class="tic-tac-toe-board" id="tic-tac-toe-board">
-                                            <div class="board-cell" data-index="0"></div>
-                                            <div class="board-cell" data-index="1"></div>
-                                            <div class="board-cell" data-index="2"></div>
-                                            <div class="board-cell" data-index="3"></div>
-                                            <div class="board-cell" data-index="4"></div>
-                                            <div class="board-cell" data-index="5"></div>
-                                            <div class="board-cell" data-index="6"></div>
-                                            <div class="board-cell" data-index="7"></div>
-                                            <div class="board-cell" data-index="8"></div>
-                                        </div>
-                                        <div class="game-controls">
-                                            <button onclick="resetGame()" class="reset-btn">New Game</button>
-                                            <button onclick="resetScore()" class="reset-score-btn">Reset Score</button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -631,7 +617,7 @@
                     </div>
                     <div class="stage-connector">
                         <svg class="connector-arrow" viewBox="0 0 100 50">
-                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#60a5fa" stroke-width="2" fill="none" opacity="0.6"/>
+                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/>
                         </svg>
                     </div>
                 </div>
@@ -650,7 +636,7 @@
                     </div>
                     <div class="stage-connector">
                         <svg class="connector-arrow" viewBox="0 0 100 50">
-                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#60a5fa" stroke-width="2" fill="none" opacity="0.6"/>
+                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/>
                         </svg>
                     </div>
                 </div>
@@ -669,7 +655,7 @@
                     </div>
                     <div class="stage-connector">
                         <svg class="connector-arrow" viewBox="0 0 100 50">
-                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#60a5fa" stroke-width="2" fill="none" opacity="0.6"/>
+                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/>
                         </svg>
                     </div>
                 </div>
@@ -688,7 +674,7 @@
                     </div>
                     <div class="stage-connector">
                         <svg class="connector-arrow" viewBox="0 0 100 50">
-                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#60a5fa" stroke-width="2" fill="none" opacity="0.6"/>
+                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/>
                         </svg>
                     </div>
                 </div>
@@ -707,7 +693,7 @@
                     </div>
                     <div class="stage-connector">
                         <svg class="connector-arrow" viewBox="0 0 100 50">
-                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#60a5fa" stroke-width="2" fill="none" opacity="0.6"/>
+                            <path d="M 0 25 L 80 25 L 75 20 M 80 25 L 75 30" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/>
                         </svg>
                     </div>
                 </div>
@@ -1337,7 +1323,7 @@
                         <polygon 
                             points="200,60 310,110 340,250 200,320 60,250 90,110"
                             fill="url(#radarGradient)"
-                            stroke="#60a5fa"
+                            stroke="#fbbf24"
                             stroke-width="2"
                             filter="url(#glow)"
                             class="radar-polygon"
@@ -1992,5 +1978,36 @@
     </button>
 
     <script src="script.js"></script>
+
+    <!-- Tic Tac Toe AI Game Modal -->
+    <div id="ai-game-backdrop" class="ai-game-backdrop"></div>
+    <div id="ai-game" class="ai-game-container">
+        <div class="ai-game-header">
+            <h3>Tic Tac Toe vs AI</h3>
+            <button onclick="toggleAIGame()" class="close-game">×</button>
+        </div>
+        <div class="ai-game-content">
+            <div class="game-status">
+                <p id="game-status">Your turn! Click a square to play.</p>
+                <p>You: <span id="player-score">0</span> | AI: <span id="ai-score">0</span></p>
+            </div>
+            <div class="tic-tac-toe-board" id="tic-tac-toe-board">
+                <div class="board-cell" data-index="0"></div>
+                <div class="board-cell" data-index="1"></div>
+                <div class="board-cell" data-index="2"></div>
+                <div class="board-cell" data-index="3"></div>
+                <div class="board-cell" data-index="4"></div>
+                <div class="board-cell" data-index="5"></div>
+                <div class="board-cell" data-index="6"></div>
+                <div class="board-cell" data-index="7"></div>
+                <div class="board-cell" data-index="8"></div>
+            </div>
+            <div class="game-controls">
+                <button onclick="resetGame()" class="reset-btn">New Game</button>
+                <button onclick="resetScore()" class="reset-score-btn">Reset Score</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
