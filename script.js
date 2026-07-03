@@ -43,8 +43,10 @@ window.addEventListener('scroll', () => {
 // Smooth scrolling for navigation links with enhanced easing
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href.length <= 1) return;
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const target = document.querySelector(href);
         if (target) {
             const headerOffset = 80;
             const elementPosition = target.getBoundingClientRect().top;
@@ -88,14 +90,7 @@ class ScrollAnimations {
 document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('loaded');
     new ScrollAnimations();
-    initTechBackground();
 });
-
-// Tech Background Particles - Disabled for clean professional look
-function initTechBackground() {
-    // Particle animations disabled for a cleaner, more professional appearance
-    return;
-}
 
 // Language Toggle Functionality
 class LanguageToggle {
@@ -148,11 +143,9 @@ class LanguageToggle {
 
         // Update button appearance
         this.updateToggleButton();
-        
-        // Update document language and title
+
+        // Update document language (title stays as the SEO-optimized <title>)
         document.documentElement.lang = lang;
-        const title = lang === 'en' ? 'Muhammad Ghufran Akbar - Portfolio' : 'Muhammad Ghufran Akbar - Portfolio';
-        document.title = title;
     }
 
     updateProjectLinks(lang) {
@@ -409,10 +402,10 @@ function initContactTypewriter() {
     
     const messages = [
         "Ready to build intelligent solutions!",
-        "Passionate about ML Engineering!",
+        "Data Engineering @ PUMA Group!",
         "Expert in Data Pipeline Architecture!",
-        "Specialized in Agentic AI Systems!",
-        "Ready to build intelligent solutions!"
+        "Building ETL/ELT workflows on GCP!",
+        "Specialized in Agentic AI Systems!"
     ];
     
     let currentMessageIndex = 0;
@@ -452,58 +445,6 @@ function initContactTypewriter() {
 
 // Initialize the contact typewriter effect
 document.addEventListener('DOMContentLoaded', initContactTypewriter);
-
-// Project card interactions
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-10px) scale(1.02)';
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0) scale(1)';
-    });
-});
-
-// Skill items hover effect
-document.querySelectorAll('.skill-item').forEach(skill => {
-    skill.addEventListener('mouseenter', () => {
-        skill.style.transform = 'scale(1.1)';
-        skill.style.boxShadow = '0 5px 15px rgba(102, 126, 234, 0.3)';
-    });
-    
-    skill.addEventListener('mouseleave', () => {
-        skill.style.transform = 'scale(1)';
-        skill.style.boxShadow = 'none';
-    });
-});
-
-// Contact form validation (if you add a contact form later)
-function validateForm(form) {
-    const inputs = form.querySelectorAll('input[required], textarea[required]');
-    let isValid = true;
-    
-    inputs.forEach(input => {
-        if (!input.value.trim()) {
-            input.style.borderColor = '#e74c3c';
-            isValid = false;
-        } else {
-            input.style.borderColor = '#ddd';
-        }
-    });
-    
-    return isValid;
-}
-
-// Add floating animation to memojis
-document.querySelectorAll('.memoji, .section-memoji, .card-memoji, .project-memoji, .skill-memoji, .method-memoji').forEach(memoji => {
-    memoji.addEventListener('mouseenter', () => {
-        memoji.style.transform = 'scale(1.2) rotate(10deg)';
-    });
-    
-    memoji.addEventListener('mouseleave', () => {
-        memoji.style.transform = 'scale(1) rotate(0deg)';
-    });
-});
 
 // Preloader (optional)
 window.addEventListener('load', () => {
@@ -618,14 +559,14 @@ class InteractiveLogo {
     constructor() {
         this.logo = document.getElementById('logo-text');
         this.nameText = this.logo.querySelector('.name-text');
-        this.originalText = 'Muhammad Ghufran Akbar';
+        this.originalText = this.nameText.textContent;
         this.techVariations = [
-            'pipeline = build_ml_model(data)',
+            'pipeline = build_etl_workflow(data)',
             'from vertex_ai import AutoML',
             'SELECT * FROM bigquery.ml.PREDICT',
-            'dbt run --models ml_features',
-            'airflow trigger_dag ml_pipeline',
-            '{ "role": "ML Engineer" }',
+            'dbt run --models marketing_marts',
+            'composer trigger_dag marketing_elt',
+            '{ "role": "Data Engineer" }',
             'terraform apply -auto-approve',
             'agentic_ai.optimize_process()',
             'data_pipeline.transform().load()',
@@ -691,40 +632,195 @@ class InteractiveLogo {
 // Initialize Interactive Logo
 document.addEventListener('DOMContentLoaded', () => {
     new InteractiveLogo();
-    initTicTacToe();
+    buildDagBoard();
 });
 
-// Tic Tac Toe Game Functionality
-let gameState = {
-    isOpen: false,
-    board: Array(9).fill(''),
-    currentPlayer: 'X',
-    gameOver: false,
-    playerScore: 0,
-    aiScore: 0
+// ========================================
+// ON-CALL: FIX THE DAG — pipeline incident mini-game
+// Tasks randomly fail (turn red); tap them to retry before the SLA
+// drains to zero. Survive the 45-second shift.
+// ========================================
+var gameState = {
+    isOpen: false
 };
 
-function initTicTacToe() {
-    const cells = document.querySelectorAll('.board-cell');
-    cells.forEach(cell => {
-        cell.addEventListener('click', handleCellClick);
+const DAG_TASKS = [
+    'extract_orders', 'dq_check', 'dbt_run',
+    'load_bigquery', 'sync_sap', 'api_ingest',
+    'dedupe_rows', 'backfill_run', 'publish_marts',
+    'schema_check', 'export_gcs', 'alert_router'
+];
+
+const DAG_SHIFT_SECONDS = 45;
+
+var dagGame = {
+    running: false,
+    sla: 100,
+    fixed: 0,
+    timeLeft: DAG_SHIFT_SECONDS,
+    spawnDelay: 1500,
+    tickTimer: null,
+    spawnTimer: null,
+    best: 0
+};
+
+function buildDagBoard() {
+    const board = document.getElementById('dag-board');
+    if (!board || board.children.length) return;
+
+    DAG_TASKS.forEach(task => {
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'dag-cell is-idle';
+        cell.innerHTML = '<span class="dc-dot"></span><span class="dc-name">' + task + '</span>';
+        cell.addEventListener('click', () => fixDagTask(cell));
+        board.appendChild(cell);
     });
-    updateScoreDisplay();
+
+    try {
+        dagGame.best = parseInt(localStorage.getItem('dag-best') || '0', 10) || 0;
+    } catch (e) { /* storage unavailable — best stays session-local */ }
+    updateDagHud();
+}
+
+function setDagStatus(text) {
+    const el = document.getElementById('game-status');
+    if (el) el.textContent = text;
+}
+
+function updateDagHud() {
+    const slaEl = document.getElementById('dag-sla');
+    const fixedEl = document.getElementById('dag-fixed');
+    const timeEl = document.getElementById('dag-time');
+    const bestEl = document.getElementById('dag-best');
+    const fillEl = document.getElementById('sla-fill');
+
+    if (slaEl) slaEl.textContent = Math.max(0, Math.round(dagGame.sla)) + '%';
+    if (fixedEl) fixedEl.textContent = dagGame.fixed;
+    if (timeEl) timeEl.textContent = dagGame.timeLeft + 's';
+    if (bestEl) bestEl.textContent = dagGame.best;
+
+    if (fillEl) {
+        fillEl.style.width = Math.max(0, dagGame.sla) + '%';
+        fillEl.classList.toggle('warn', dagGame.sla <= 66 && dagGame.sla > 33);
+        fillEl.classList.toggle('crit', dagGame.sla <= 33);
+    }
+}
+
+function stopDagTimers() {
+    clearInterval(dagGame.tickTimer);
+    clearTimeout(dagGame.spawnTimer);
+    dagGame.tickTimer = null;
+    dagGame.spawnTimer = null;
+}
+
+function startDagGame() {
+    stopDagTimers();
+    dagGame.running = true;
+    dagGame.sla = 100;
+    dagGame.fixed = 0;
+    dagGame.timeLeft = DAG_SHIFT_SECONDS;
+    dagGame.spawnDelay = 1500;
+
+    document.querySelectorAll('.dag-cell').forEach(cell => {
+        cell.className = 'dag-cell is-ok';
+    });
+
+    const startBtn = document.getElementById('dag-start');
+    if (startBtn) startBtn.textContent = 'Restart shift';
+
+    setDagStatus('Shift started. All systems green… for now.');
+    updateDagHud();
+
+    // 1s heartbeat: countdown + every failed task drains the SLA
+    dagGame.tickTimer = setInterval(() => {
+        dagGame.timeLeft--;
+        const failing = document.querySelectorAll('.dag-cell.is-failed').length;
+        dagGame.sla -= failing * 1.4;
+
+        if (dagGame.sla <= 0) {
+            dagGame.sla = 0;
+            updateDagHud();
+            endDagGame(false);
+            return;
+        }
+        if (dagGame.timeLeft <= 0) {
+            dagGame.timeLeft = 0;
+            updateDagHud();
+            endDagGame(true);
+            return;
+        }
+        updateDagHud();
+    }, 1000);
+
+    scheduleDagFailure();
+}
+
+function scheduleDagFailure() {
+    dagGame.spawnTimer = setTimeout(() => {
+        if (!dagGame.running) return;
+
+        const healthy = document.querySelectorAll('.dag-cell.is-ok');
+        if (healthy.length) {
+            const victim = healthy[Math.floor(Math.random() * healthy.length)];
+            victim.className = 'dag-cell is-failed';
+        }
+
+        // escalation: failures come faster as the shift wears on
+        dagGame.spawnDelay = Math.max(520, dagGame.spawnDelay - 45);
+        scheduleDagFailure();
+    }, dagGame.spawnDelay);
+}
+
+function fixDagTask(cell) {
+    if (!dagGame.running || !cell.classList.contains('is-failed')) return;
+
+    cell.className = 'dag-cell is-fixing';
+    dagGame.fixed++;
+    updateDagHud();
+
+    setTimeout(() => {
+        if (cell.classList.contains('is-fixing')) {
+            cell.className = 'dag-cell is-ok';
+        }
+    }, 350);
+}
+
+function endDagGame(survived) {
+    dagGame.running = false;
+    stopDagTimers();
+
+    if (dagGame.fixed > dagGame.best) {
+        dagGame.best = dagGame.fixed;
+        try { localStorage.setItem('dag-best', String(dagGame.best)); } catch (e) { /* ignore */ }
+    }
+    updateDagHud();
+
+    if (survived) {
+        setDagStatus('Shift survived — SLA held at ' + Math.round(dagGame.sla) + '% with ' +
+            dagGame.fixed + ' tasks recovered. The warehouse lives to load another day. exit 0');
+    } else {
+        setDagStatus('SLA breached — the pipeline went down with ' + dagGame.fixed +
+            ' tasks recovered. Grab a coffee and restart the shift. exit 1');
+    }
+
+    const startBtn = document.getElementById('dag-start');
+    if (startBtn) startBtn.textContent = 'Start shift';
 }
 
 function toggleAIGame() {
     const gameContainer = document.getElementById('ai-game');
     const backdrop = document.getElementById('ai-game-backdrop');
-    
+
     if (!gameState.isOpen) {
         // Open game
         backdrop.classList.add('active');
         gameContainer.classList.add('active');
         gameState.isOpen = true;
-        
+
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
-        
+
         // Add event listeners
         setTimeout(() => {
             document.addEventListener('click', handleOutsideClick);
@@ -735,10 +831,19 @@ function toggleAIGame() {
         backdrop.classList.remove('active');
         gameContainer.classList.remove('active');
         gameState.isOpen = false;
-        
+
+        // Pause the incident shift when the pager is put down
+        if (dagGame.running) {
+            dagGame.running = false;
+            stopDagTimers();
+            setDagStatus('Shift abandoned — the DAG waits for your return. Press "Start shift" to go back on call.');
+            const startBtn = document.getElementById('dag-start');
+            if (startBtn) startBtn.textContent = 'Start shift';
+        }
+
         // Restore body scroll
         document.body.style.overflow = 'auto';
-        
+
         // Remove event listeners
         document.removeEventListener('click', handleOutsideClick);
         document.removeEventListener('keydown', handleEscKey);
@@ -752,191 +857,12 @@ function handleEscKey(event) {
 }
 
 function handleOutsideClick(event) {
-    const gameContainer = document.getElementById('ai-game');
-    const profileTitle = document.querySelector('.profile-title');
     const backdrop = document.getElementById('ai-game-backdrop');
-    
+
     // Close if clicking on backdrop
     if (event.target === backdrop) {
         toggleAIGame();
     }
-}
-
-function handleCellClick(event) {
-    const cellIndex = parseInt(event.target.dataset.index);
-    
-    if (gameState.board[cellIndex] !== '' || gameState.gameOver) {
-        return;
-    }
-    
-    // Player move
-    makeMove(cellIndex, 'X');
-    
-    if (!gameState.gameOver) {
-        // AI move after a short delay
-        setTimeout(() => {
-            const aiMove = getBestMove();
-            if (aiMove !== -1) {
-                makeMove(aiMove, 'O');
-            }
-        }, 500);
-    }
-}
-
-function makeMove(index, player) {
-    gameState.board[index] = player;
-    const cell = document.querySelector(`[data-index="${index}"]`);
-    cell.textContent = player;
-    cell.classList.add(player === 'X' ? 'player-x' : 'player-o');
-    
-    const winner = checkWinner();
-    if (winner) {
-        gameState.gameOver = true;
-        handleGameEnd(winner);
-    } else if (gameState.board.every(cell => cell !== '')) {
-        gameState.gameOver = true;
-        handleGameEnd('tie');
-    }
-}
-
-function checkWinner() {
-    const lines = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-        [0, 4, 8], [2, 4, 6] // diagonals
-    ];
-    
-    for (let line of lines) {
-        const [a, b, c] = line;
-        if (gameState.board[a] && gameState.board[a] === gameState.board[b] && gameState.board[a] === gameState.board[c]) {
-            // Highlight winning cells
-            line.forEach(index => {
-                document.querySelector(`[data-index="${index}"]`).classList.add('winning');
-            });
-            return gameState.board[a];
-        }
-    }
-    return null;
-}
-
-function handleGameEnd(result) {
-    const statusElement = document.getElementById('game-status');
-    const gameContainer = document.getElementById('ai-game');
-    
-    if (result === 'X') {
-        statusElement.textContent = '🎉 You won! Great job!';
-        statusElement.style.color = '#60a5fa';
-        gameState.playerScore++;
-        gameContainer.style.animation = 'gameWin 1s ease-in-out';
-    } else if (result === 'O') {
-        statusElement.textContent = '🤖 AI wins! Try again!';
-        statusElement.style.color = '#f59e0b';
-        gameState.aiScore++;
-    } else {
-        statusElement.textContent = '🤝 It\'s a tie! Good game!';
-        statusElement.style.color = '#22c55e';
-    }
-    
-    updateScoreDisplay();
-    
-    setTimeout(() => {
-        gameContainer.style.animation = '';
-    }, 1000);
-}
-
-function getBestMove() {
-    // Simple AI with minimax algorithm
-    let bestScore = -Infinity;
-    let bestMove = -1;
-    
-    for (let i = 0; i < 9; i++) {
-        if (gameState.board[i] === '') {
-            gameState.board[i] = 'O';
-            let score = minimax(gameState.board, 0, false);
-            gameState.board[i] = '';
-            
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = i;
-            }
-        }
-    }
-    
-    return bestMove;
-}
-
-function minimax(board, depth, isMaximizing) {
-    const winner = checkWinnerForMinimax(board);
-    
-    if (winner === 'O') return 1;
-    if (winner === 'X') return -1;
-    if (board.every(cell => cell !== '')) return 0;
-    
-    if (isMaximizing) {
-        let bestScore = -Infinity;
-        for (let i = 0; i < 9; i++) {
-            if (board[i] === '') {
-                board[i] = 'O';
-                let score = minimax(board, depth + 1, false);
-                board[i] = '';
-                bestScore = Math.max(score, bestScore);
-            }
-        }
-        return bestScore;
-    } else {
-        let bestScore = Infinity;
-        for (let i = 0; i < 9; i++) {
-            if (board[i] === '') {
-                board[i] = 'X';
-                let score = minimax(board, depth + 1, true);
-                board[i] = '';
-                bestScore = Math.min(score, bestScore);
-            }
-        }
-        return bestScore;
-    }
-}
-
-function checkWinnerForMinimax(board) {
-    const lines = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-        [0, 4, 8], [2, 4, 6] // diagonals
-    ];
-    
-    for (let line of lines) {
-        const [a, b, c] = line;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a];
-        }
-    }
-    return null;
-}
-
-function resetGame() {
-    gameState.board = Array(9).fill('');
-    gameState.gameOver = false;
-    
-    const cells = document.querySelectorAll('.board-cell');
-    cells.forEach(cell => {
-        cell.textContent = '';
-        cell.classList.remove('player-x', 'player-o', 'winning');
-    });
-    
-    document.getElementById('game-status').textContent = 'Your turn! Click a square to play.';
-    document.getElementById('game-status').style.color = '#fbbf24';
-}
-
-function resetScore() {
-    gameState.playerScore = 0;
-    gameState.aiScore = 0;
-    updateScoreDisplay();
-    resetGame();
-}
-
-function updateScoreDisplay() {
-    document.getElementById('player-score').textContent = gameState.playerScore;
-    document.getElementById('ai-score').textContent = gameState.aiScore;
 }
 
 // Scroll to Top Button Functionality
@@ -1272,21 +1198,6 @@ function animateDAGTasks() {
     });
 }
 
-// Add hover effects to tech tags
-function initTechTagInteractions() {
-    const techTags = document.querySelectorAll('.tech-tags span');
-    
-    techTags.forEach(tag => {
-        tag.addEventListener('mouseenter', () => {
-            tag.style.transform = 'translateY(-3px) scale(1.05)';
-        });
-        
-        tag.addEventListener('mouseleave', () => {
-            tag.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-}
-
 // Add pulse animation to metric cards
 function initMetricCardAnimations() {
     const metricCards = document.querySelectorAll('.metric-card');
@@ -1335,13 +1246,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initAgenticInteractions();
     initDAGInteractions();
     initVisualizationScrollAnimations();
-    initTechTagInteractions();
     initMetricCardAnimations();
-    initRippleEffect();
-    initSmoothScrolling();
-    initProjectCardInteractions();
     initResponsiveOptimizations();
     initMobileNavigation();
+    initPipelineRun();
 });
 
 // Mobile Navigation Enhancement
@@ -1425,72 +1333,6 @@ function initResponsiveOptimizations() {
     }, { passive: true });
 }
 
-// Add ripple effect to interactive elements
-function initRippleEffect() {
-    const rippleElements = document.querySelectorAll('.pipeline-stage, .metric-card, .agent-node, .dag-task, .tech-detail-card, .project-card');
-    
-    rippleElements.forEach(element => {
-        element.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                border-radius: 50%;
-                background: rgba(96, 165, 250, 0.4);
-                left: ${x}px;
-                top: ${y}px;
-                pointer-events: none;
-                animation: rippleEffect 0.6s ease-out;
-            `;
-            
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
-            
-            setTimeout(() => ripple.remove(), 600);
-        });
-    });
-}
-
-// Smooth scrolling for all anchor links
-function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-}
-
-// Enhanced project card interactions
-function initProjectCardInteractions() {
-    const projectCards = document.querySelectorAll('.project-card');
-    
-    projectCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-10px) scale(1.02)';
-            card.style.boxShadow = '0 20px 60px rgba(96, 165, 250, 0.3)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0) scale(1)';
-            card.style.boxShadow = '';
-        });
-    });
-}
-
 // Add mobile touch support for visualizations
 if ('ontouchstart' in window) {
     document.querySelectorAll('.pipeline-stage, .agent-node, .dag-task').forEach(element => {
@@ -1563,3 +1405,70 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 500);
 });
+
+// ========================================
+// PIPELINE RUN — "a day in the life"
+// Drives the run-progress bar, the shift clock, and flips each
+// section's task status QUEUED -> RUNNING -> SUCCESS as you scroll.
+// ========================================
+function initPipelineRun() {
+    const fill = document.getElementById('pipeline-progress-fill');
+    const clock = document.getElementById('nav-clock');
+    const metas = Array.from(document.querySelectorAll('.task-meta'));
+    const navLinks = Array.from(document.querySelectorAll('.nav-menu .nav-link'));
+    const STATUS_LABELS = { queued: 'QUEUED', running: 'RUNNING', success: 'SUCCESS' };
+    let runPct = 0;
+
+    function tickClock() {
+        if (!clock) return;
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        clock.textContent = 'run ' + Math.round(runPct) + '% · ' + hh + ':' + mm;
+    }
+    setInterval(tickClock, 30000);
+
+    function update() {
+        const scrollY = window.pageYOffset;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        runPct = maxScroll > 0 ? Math.min(100, Math.max(0, (scrollY / maxScroll) * 100)) : 0;
+        if (fill) {
+            fill.style.width = runPct + '%';
+        }
+        tickClock();
+
+        // The "execution line": a point 45% down the viewport decides
+        // which task is currently running.
+        const line = scrollY + window.innerHeight * 0.45;
+
+        metas.forEach(meta => {
+            const section = meta.closest('section');
+            if (!section) return;
+            const rect = section.getBoundingClientRect();
+            const top = rect.top + scrollY;
+            const bottom = top + rect.height;
+            let status = 'queued';
+            if (line >= bottom) status = 'success';
+            else if (line >= top) status = 'running';
+            if (meta.getAttribute('data-task-status') !== status) {
+                meta.setAttribute('data-task-status', status);
+                const chip = meta.querySelector('.tm-status');
+                if (chip) chip.textContent = STATUS_LABELS[status];
+            }
+        });
+
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href') || '';
+            if (href.length < 2 || href[0] !== '#') return;
+            const section = document.querySelector(href);
+            if (!section) return;
+            const rect = section.getBoundingClientRect();
+            const bottom = rect.top + scrollY + rect.height;
+            link.classList.toggle('is-done', line >= bottom);
+        });
+    }
+
+    update();
+    window.addEventListener('scroll', throttle(update, 100), { passive: true });
+    window.addEventListener('resize', throttle(update, 250));
+}

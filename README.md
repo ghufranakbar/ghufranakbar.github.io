@@ -1,6 +1,6 @@
 # Muhammad Ghufran Akbar - Portfolio
 
-A modern, responsive portfolio website showcasing my experience as a Global Ecommerce Engineering professional, data scientist, and full-stack developer.
+A modern, responsive portfolio website showcasing my experience as a Data Engineering professional, data scientist, and full-stack developer.
 
 ## 🚀 Live Demo
 
@@ -8,7 +8,7 @@ Visit the live portfolio: [ghufranakbar.github.ioL]
 
 ## 📋 Overview
 
-This portfolio highlights my journey from a Gold Medal engineering graduate to a global tech innovator, currently working at PUMA GROUP while pursuing M.Sc. International Information Systems in Germany.
+This portfolio highlights my journey from a Gold Medal engineering graduate to a global tech innovator, currently working as Junior Manager Data Engineering at PUMA Group in Nuremberg, Germany — building data pipelines and ETL/ELT workflows on Google Cloud Platform (BigQuery, Cloud Storage, Cloud Composer).
 
 ### Key Highlights
 - **6 Companies** across Banking, E-commerce, Sports & Lifestyle, and Telecommunications
@@ -172,4 +172,4 @@ If you'd like to contribute or have suggestions:
 
 ---
 
-**Built with passion and precision** | © 2025 Muhammad Ghufran Akbar
+**Built with passion and precision** | © 2026 Muhammad Ghufran Akbar

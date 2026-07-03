@@ -1,6 +1,6 @@
 /* TEAM */
 Developer: Muhammad Ghufran Akbar (Ghufran Akbar)
-Role: ML Engineer & Data Engineer
+Role: Junior Manager Data Engineering
 Location: Nuremberg, Bavaria, Germany
 Email: ghufran.akbar99@gmail.com
 LinkedIn: linkedin.com/in/ghufranakbar
@@ -17,12 +17,13 @@ IDE: Visual Studio Code
 
 /* COMPANY */
 Current Employer: PUMA GROUP
-Position: Global Ecommerce Engineering - Working Student
+Position: Junior Manager Data Engineering
 Location: Nuremberg, Germany
 
 /* EXPERTISE */
-Machine Learning Engineering
 Data Engineering & ETL/ELT
+Machine Learning Engineering
+BigQuery, Cloud Storage & Cloud Composer
 Agentic AI & LLM Applications
 Cloud Architecture (GCP)
 Vertex AI & BigQuery
@@ -41,4 +42,4 @@ Country: Germany
 Region: Europe
 
 /* LAST UPDATE */
-Date: 2025-12-30
+Date: 2026-07-03
