@@ -1135,24 +1135,113 @@ h1, h2, h3, .hero-title, .section-title {
 
 /* ---------- 19. On-call mini-game: fix_the_dag ----------------------------- */
 
-/* invite chip on the clickable prompt under the photo */
+/* The clickable prompt under the photo. styles.css ships a legacy "AI
+   activation" hover here (3D tilt, text fading out, a "Click to train the
+   model" overlay, a 180° flip on click) — retire all of it. The one and only
+   affordance is a small "▸ play" chip that fills amber on hover. */
+.profile-title {
+    background: var(--bg-secondary);
+    border: 1px solid var(--de-panel-border);
+    border-radius: 6px;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transform-style: flat;
+    perspective: none;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.profile-title::before {
+    display: none;
+    animation: none;
+}
+
+.profile-title:hover {
+    transform: translateY(-2px);
+    background: var(--bg-secondary);
+    border-color: var(--de-panel-border-hover);
+    box-shadow: none;
+    filter: none;
+}
+
+:root[data-theme="light"] .profile-title {
+    background: var(--bg-secondary);
+    border: 1px solid var(--de-panel-border);
+    box-shadow: none;
+}
+
+:root[data-theme="light"] .profile-title:hover {
+    background: var(--bg-secondary);
+    border-color: var(--de-panel-border-hover);
+    box-shadow: none;
+}
+
+/* invite chip — sits in the normal flow after the command text */
 .profile-title::after {
     content: '\25B8 play';
+    position: static;
     font-family: var(--de-mono);
     font-size: 0.6rem;
+    font-weight: 500;
     letter-spacing: 0.05em;
+    text-transform: none;
     color: var(--accent-primary);
+    background: transparent;
     border: 1px solid var(--de-panel-border);
     border-radius: 3px;
     padding: 2px 7px;
     margin-left: 10px;
     opacity: 0.85;
-    transition: background 0.25s ease, color 0.25s ease;
+    animation: none;
+    transform: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    pointer-events: none;
+    white-space: nowrap;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
 .profile-title:hover::after {
+    content: '\25B8 play';
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
     background: var(--accent-primary);
     color: #0a0e13;
+    border: 1px solid var(--accent-primary);
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    font-family: var(--de-mono);
+    letter-spacing: 0.05em;
+    animation: none;
+    opacity: 1;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+/* keep the command text fully readable on hover */
+.profile-title:hover .code-bracket,
+.profile-title:hover .name-text,
+.profile-title:hover .cursor-blink {
+    opacity: 1;
+    transform: none;
+}
+
+/* click feedback: a quiet press, not a 180° flip */
+.profile-title:active {
+    transform: translateY(0) scale(0.98);
+    background: var(--bg-secondary);
+    border-color: var(--accent-primary);
+    box-shadow: none;
+    transition: transform 0.15s ease;
+}
+
+.profile-title:active .code-bracket,
+.profile-title:active .name-text,
+.profile-title:active .cursor-blink {
+    animation: none;
 }
 
 .ai-game-container {

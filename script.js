@@ -777,6 +777,10 @@ function fixDagTask(cell) {
 
     cell.className = 'dag-cell is-fixing';
     dagGame.fixed++;
+    if (dagGame.fixed > dagGame.best) {
+        dagGame.best = dagGame.fixed;
+        try { localStorage.setItem('dag-best', String(dagGame.best)); } catch (e) { /* ignore */ }
+    }
     updateDagHud();
 
     setTimeout(() => {
@@ -789,11 +793,6 @@ function fixDagTask(cell) {
 function endDagGame(survived) {
     dagGame.running = false;
     stopDagTimers();
-
-    if (dagGame.fixed > dagGame.best) {
-        dagGame.best = dagGame.fixed;
-        try { localStorage.setItem('dag-best', String(dagGame.best)); } catch (e) { /* ignore */ }
-    }
     updateDagHud();
 
     if (survived) {
