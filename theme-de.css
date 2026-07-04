@@ -70,6 +70,11 @@ body {
     background-attachment: fixed;
 }
 
+/* iOS Safari handles fixed background attachment poorly — let it scroll */
+@supports (-webkit-touch-callout: none) {
+    body { background-attachment: scroll; }
+}
+
 ::selection {
     background: var(--accent-primary);
     color: #0a0e13;
@@ -96,17 +101,25 @@ body {
 
 /* ---------- 3. Navigation: pipeline control bar --------------------------- */
 
+/* The navbar background is solid, so the legacy backdrop blur adds nothing —
+   and on iOS Safari a backdrop-filter on the fixed navbar turns it into the
+   containing block for the fixed nav drawer inside it, which breaks the
+   drawer's position entirely. Remove it in both states. */
 .navbar {
     padding: 0;
     background: var(--bg-primary);
     border-bottom: 1px solid var(--de-panel-border);
     box-shadow: none;
     animation: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .navbar.scrolled {
     background: var(--bg-primary);
     box-shadow: 0 6px 24px var(--shadow-color);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .nav-container {
@@ -846,9 +859,14 @@ h1, h2, h3, .hero-title, .section-title {
     .nav-menu {
         top: 59px;
         height: calc(100vh - 59px);
+        /* iOS Safari: 100vh includes the collapsed URL bar; dvh tracks it */
+        height: calc(100dvh - 59px);
         background: var(--bg-primary);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
         align-items: center;
         padding-top: 1.1rem;
+        z-index: 1001;
     }
 
     :root[data-theme="light"] .nav-menu {
@@ -1178,7 +1196,7 @@ h1, h2, h3, .hero-title, .section-title {
 
 /* invite chip — sits in the normal flow after the command text */
 .profile-title::after {
-    content: '\25B8 play';
+    content: '\25B8 simulate';
     position: static;
     font-family: var(--de-mono);
     font-size: 0.6rem;
@@ -1202,7 +1220,7 @@ h1, h2, h3, .hero-title, .section-title {
 }
 
 .profile-title:hover::after {
-    content: '\25B8 play';
+    content: '\25B8 simulate';
     position: static;
     top: auto;
     left: auto;
@@ -1251,6 +1269,18 @@ h1, h2, h3, .hero-title, .section-title {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: 0 30px 80px var(--shadow-color);
+    /* calm, professional entrance — no bounce, no 3D flip */
+    width: min(calc(100vw - 28px), 520px);
+    max-height: calc(100vh - 28px);
+    max-height: calc(100dvh - 28px);
+    padding: 20px;
+    transform: translate(-50%, -48%) scale(0.985);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.ai-game-container.active {
+    transform: translate(-50%, -50%) scale(1);
+    animation: none;
 }
 
 :root[data-theme="light"] .ai-game-container {
@@ -1261,6 +1291,17 @@ h1, h2, h3, .hero-title, .section-title {
 
 .ai-game-container::before { display: none; }
 
+/* solid dimmed backdrop — heavy blur is slow and glitchy on mobile Safari */
+.ai-game-backdrop {
+    background: rgba(6, 9, 13, 0.74);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+:root[data-theme="light"] .ai-game-backdrop {
+    background: rgba(25, 28, 33, 0.4);
+}
+
 .ai-game-header h3 {
     font-family: var(--de-mono);
     font-size: 1rem;
@@ -1269,10 +1310,24 @@ h1, h2, h3, .hero-title, .section-title {
 }
 
 .ai-game-header h3::after {
-    content: 'pipeline incident simulator';
+    content: 'pipeline reliability simulation';
     color: var(--text-muted);
     font-family: var(--de-mono);
 }
+
+.sim-meta {
+    font-family: var(--de-mono);
+    font-size: 0.66rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    background: var(--bg-primary);
+    border: 1px solid var(--de-panel-border);
+    border-radius: 4px;
+    padding: 0.45rem 0.65rem;
+    margin-bottom: 12px;
+}
+
+:root[data-theme="light"] .sim-meta { color: var(--text-muted); }
 
 .game-status p {
     font-family: var(--de-mono);

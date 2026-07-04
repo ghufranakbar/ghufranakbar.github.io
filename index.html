@@ -251,8 +251,8 @@
                                 <h1 class="visually-hidden">Muhammad Ghufran Akbar - Ghufran Akbar - Junior Manager Data Engineering at PUMA Group Nuremberg</h1>
                                 <p class="profile-title" onclick="toggleAIGame()">
                                     <span class="code-bracket">$</span>
-                                    <span class="name-text">fix_the_dag</span>
-                                    <span class="code-bracket">--oncall</span>
+                                    <span class="name-text">oncall</span>
+                                    <span class="code-bracket">--simulate</span>
                                     <span class="cursor-blink">▊</span>
                                 </p>
                             </div>
@@ -1983,27 +1983,28 @@
 
     <script src="script.js"></script>
 
-    <!-- On-Call: Fix the DAG — interactive pipeline incident mini-game -->
+    <!-- Incident response simulation — interactive pipeline reliability demo -->
     <div id="ai-game-backdrop" class="ai-game-backdrop"></div>
-    <div id="ai-game" class="ai-game-container" role="dialog" aria-label="On-call pipeline mini-game">
+    <div id="ai-game" class="ai-game-container" role="dialog" aria-label="Pipeline incident response simulation">
         <div class="ai-game-header">
-            <h3>on-call: fix_the_dag</h3>
-            <button type="button" onclick="toggleAIGame()" class="close-game" aria-label="Close game">×</button>
+            <h3>incident_response</h3>
+            <button type="button" onclick="toggleAIGame()" class="close-game" aria-label="Close simulation">×</button>
         </div>
         <div class="ai-game-content">
+            <p class="sim-meta" aria-hidden="true">dag: ghufran_daily · env: prod-sim · trigger: manual · window: 45s</p>
             <div class="game-status">
-                <p id="game-status">03:00 — PagerDuty is screaming. Tasks are failing across the DAG. Tap the red tasks to retry them and keep the SLA alive until the end of your shift.</p>
+                <p id="game-status">Simulated incident: tasks in this DAG will begin failing at random. Retry failing tasks promptly — every second a task stays down erodes the SLA. Hold above zero for the full window.</p>
             </div>
             <div class="dag-stats">
                 <div class="dag-stat"><span class="ds-label">sla</span><span class="ds-value" id="dag-sla">100%</span></div>
-                <div class="dag-stat"><span class="ds-label">fixed</span><span class="ds-value" id="dag-fixed">0</span></div>
-                <div class="dag-stat"><span class="ds-label">shift</span><span class="ds-value" id="dag-time">45s</span></div>
-                <div class="dag-stat"><span class="ds-label">best</span><span class="ds-value" id="dag-best">0</span></div>
+                <div class="dag-stat"><span class="ds-label">retries</span><span class="ds-value" id="dag-fixed">0</span></div>
+                <div class="dag-stat"><span class="ds-label">mttr</span><span class="ds-value" id="dag-mttr">—</span></div>
+                <div class="dag-stat"><span class="ds-label">window</span><span class="ds-value" id="dag-time">45s</span></div>
             </div>
             <div class="sla-bar" aria-hidden="true"><div class="sla-fill" id="sla-fill"></div></div>
             <div class="dag-board" id="dag-board" aria-label="Pipeline task grid"></div>
             <div class="game-controls">
-                <button type="button" onclick="startDagGame()" class="reset-btn" id="dag-start">Start shift</button>
+                <button type="button" onclick="startDagGame()" class="reset-btn" id="dag-start">Run simulation</button>
             </div>
         </div>
     </div>

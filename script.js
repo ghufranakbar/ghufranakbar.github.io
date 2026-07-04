@@ -661,8 +661,15 @@ var dagGame = {
     spawnDelay: 1500,
     tickTimer: null,
     spawnTimer: null,
-    best: 0
+    best: 0,
+    mttrSum: 0,
+    mttrCount: 0
 };
+
+function dagMttrSeconds() {
+    if (!dagGame.mttrCount) return null;
+    return dagGame.mttrSum / dagGame.mttrCount / 1000;
+}
 
 function buildDagBoard() {
     const board = document.getElementById('dag-board');
@@ -692,13 +699,16 @@ function updateDagHud() {
     const slaEl = document.getElementById('dag-sla');
     const fixedEl = document.getElementById('dag-fixed');
     const timeEl = document.getElementById('dag-time');
-    const bestEl = document.getElementById('dag-best');
+    const mttrEl = document.getElementById('dag-mttr');
     const fillEl = document.getElementById('sla-fill');
 
     if (slaEl) slaEl.textContent = Math.max(0, Math.round(dagGame.sla)) + '%';
     if (fixedEl) fixedEl.textContent = dagGame.fixed;
     if (timeEl) timeEl.textContent = dagGame.timeLeft + 's';
-    if (bestEl) bestEl.textContent = dagGame.best;
+    if (mttrEl) {
+        const mttr = dagMttrSeconds();
+        mttrEl.textContent = mttr === null ? '—' : mttr.toFixed(1) + 's';
+    }
 
     if (fillEl) {
         fillEl.style.width = Math.max(0, dagGame.sla) + '%';
@@ -721,15 +731,18 @@ function startDagGame() {
     dagGame.fixed = 0;
     dagGame.timeLeft = DAG_SHIFT_SECONDS;
     dagGame.spawnDelay = 1500;
+    dagGame.mttrSum = 0;
+    dagGame.mttrCount = 0;
 
     document.querySelectorAll('.dag-cell').forEach(cell => {
         cell.className = 'dag-cell is-ok';
+        delete cell.dataset.failedAt;
     });
 
     const startBtn = document.getElementById('dag-start');
-    if (startBtn) startBtn.textContent = 'Restart shift';
+    if (startBtn) startBtn.textContent = 'Restart simulation';
 
-    setDagStatus('Shift started. All systems green… for now.');
+    setDagStatus('Simulation running — all tasks green. Failures incoming.');
     updateDagHud();
 
     // 1s heartbeat: countdown + every failed task drains the SLA
@@ -764,6 +777,7 @@ function scheduleDagFailure() {
         if (healthy.length) {
             const victim = healthy[Math.floor(Math.random() * healthy.length)];
             victim.className = 'dag-cell is-failed';
+            victim.dataset.failedAt = String(Date.now());
         }
 
         // escalation: failures come faster as the shift wears on
@@ -781,6 +795,13 @@ function fixDagTask(cell) {
         dagGame.best = dagGame.fixed;
         try { localStorage.setItem('dag-best', String(dagGame.best)); } catch (e) { /* ignore */ }
     }
+
+    const failedAt = parseInt(cell.dataset.failedAt || '0', 10);
+    if (failedAt) {
+        dagGame.mttrSum += Date.now() - failedAt;
+        dagGame.mttrCount++;
+        delete cell.dataset.failedAt;
+    }
     updateDagHud();
 
     setTimeout(() => {
@@ -795,16 +816,21 @@ function endDagGame(survived) {
     stopDagTimers();
     updateDagHud();
 
+    const mttr = dagMttrSeconds();
+    const mttrText = mttr === null ? '' : ' · MTTR ' + mttr.toFixed(1) + 's';
+    const bestText = ' · best run: ' + dagGame.best + ' retries';
+
     if (survived) {
-        setDagStatus('Shift survived — SLA held at ' + Math.round(dagGame.sla) + '% with ' +
-            dagGame.fixed + ' tasks recovered. The warehouse lives to load another day. exit 0');
+        setDagStatus('Incident resolved — window closed with SLA at ' + Math.round(dagGame.sla) +
+            '%. ' + dagGame.fixed + ' retries issued' + mttrText + bestText + '. exit 0');
     } else {
-        setDagStatus('SLA breached — the pipeline went down with ' + dagGame.fixed +
-            ' tasks recovered. Grab a coffee and restart the shift. exit 1');
+        setDagStatus('SLA exhausted after ' + (DAG_SHIFT_SECONDS - dagGame.timeLeft) +
+            's — ' + dagGame.fixed + ' retries issued' + mttrText +
+            '. Postmortem scheduled; run the simulation again. exit 1');
     }
 
     const startBtn = document.getElementById('dag-start');
-    if (startBtn) startBtn.textContent = 'Start shift';
+    if (startBtn) startBtn.textContent = 'Run simulation';
 }
 
 function toggleAIGame() {
@@ -831,13 +857,13 @@ function toggleAIGame() {
         gameContainer.classList.remove('active');
         gameState.isOpen = false;
 
-        // Pause the incident shift when the pager is put down
+        // Stop the simulation when the dialog closes
         if (dagGame.running) {
             dagGame.running = false;
             stopDagTimers();
-            setDagStatus('Shift abandoned — the DAG waits for your return. Press "Start shift" to go back on call.');
+            setDagStatus('Simulation paused — resume anytime.');
             const startBtn = document.getElementById('dag-start');
-            if (startBtn) startBtn.textContent = 'Start shift';
+            if (startBtn) startBtn.textContent = 'Run simulation';
         }
 
         // Restore body scroll
