@@ -1336,36 +1336,67 @@ h1, h2, h3, .hero-title, .section-title {
     color: var(--text-secondary);
 }
 
+/* Metrics readout: one unified strip with hairline dividers — four floating
+   boxes wrapped unevenly on phones and read as clutter. Tabular numerals and
+   a reserved value line keep the strip rock-steady while numbers change. */
 .dag-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
     margin: 14px 0 10px;
+    border: 1px solid var(--de-panel-border);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    overflow: hidden;
 }
 
 .dag-stat {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 2px;
-    padding: 6px 9px;
-    border: 1px solid var(--de-panel-border);
-    border-radius: 4px;
-    background: var(--bg-primary);
+    min-width: 0;
+    padding: 8px 4px;
+    border: none;
+    border-left: 1px solid var(--de-panel-border);
+    border-radius: 0;
+    background: transparent;
+    text-align: center;
 }
+
+.dag-stat:first-child { border-left: none; }
 
 .ds-label {
     font-family: var(--de-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.08em;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
+    white-space: nowrap;
 }
 
 .ds-value {
     font-family: var(--de-mono);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 600;
     color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    min-height: 1.2em;
+    white-space: nowrap;
+}
+
+/* narrow screens: clean 2×2 with dividers on both axes */
+@media (max-width: 480px) {
+    .dag-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .dag-stat:nth-child(3) { border-left: none; }
+
+    .dag-stat:nth-child(3),
+    .dag-stat:nth-child(4) {
+        border-top: 1px solid var(--de-panel-border);
+    }
 }
 
 .sla-bar {
@@ -1456,7 +1487,6 @@ h1, h2, h3, .hero-title, .section-title {
 
 @media (max-width: 430px) {
     .dag-board { grid-template-columns: repeat(2, 1fr); }
-    .dag-stats { grid-template-columns: repeat(2, 1fr); }
     .dag-cell { font-size: 0.6rem; }
 }
 
@@ -1733,10 +1763,9 @@ h1, h2, h3, .hero-title, .section-title {
     .sim-meta { font-size: 0.58rem; padding: 0.4rem 0.55rem; }
     .game-status p, .game-status p:first-child { font-size: 0.68rem; }
 
-    .dag-stats { gap: 6px; }
-    .dag-stat { padding: 5px 7px; }
-    .ds-label { font-size: 0.54rem; }
-    .ds-value { font-size: 0.82rem; }
+    .dag-stat { padding: 7px 4px; }
+    .ds-label { font-size: 0.52rem; }
+    .ds-value { font-size: 0.84rem; }
 
     .dag-board { gap: 6px; }
     .dag-cell { padding: 9px 7px; font-size: 0.58rem; gap: 6px; }
