@@ -1275,12 +1275,19 @@ h1, h2, h3, .hero-title, .section-title {
     max-height: calc(100dvh - 28px);
     padding: 20px;
     transform: translate(-50%, -48%) scale(0.985);
-    transition: opacity 0.22s ease, transform 0.22s ease;
+    /* CRITICAL: while closed the dialog must be fully inert — an opacity-0
+       element at z-index 99999 otherwise swallows every tap on the page */
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.25s;
 }
 
 .ai-game-container.active {
     transform: translate(-50%, -50%) scale(1);
     animation: none;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s;
 }
 
 :root[data-theme="light"] .ai-game-container {
